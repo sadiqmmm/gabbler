@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Gabbler: build your community">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+    <link rel="icon" href="/favicon.ico?v=1" />
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#ffffff">
+
+    <title>Gabbler: Build your community</title>
+
+    <%= if Guardian.Plug.current_token(@conn) do %>
+      <meta name='guardian_token' content="<%= Guardian.Plug.current_token(@conn) %>">
+    <% end %>
+  </head>
+
+  <body>
+    <link rel="stylesheet" href="<%= Routes.static_path(@conn, "/css/app.css") %>">
+    <div class="container">
+      <header class="header">
+        <h1><a href="/"><img class="logo" src="/images/logo/<%= logo() %>.svg" /></a></h1>
+
+        <div id="search"></div>
+
+        <nav role="navigation">
+          <ul class="nav nav-pills pull-right">
+            <%= if assigns[:user] do %>
+              <li><a href="/room/new">Create a Room</a></li>
+              <li><a href="/u/<%= assigns[:user].name %>"><%= assigns[:user].name %></a></li>
+              <li><a href="/">Log out</a></li>
+            <% else %>
+              <li><a href="/sessions/new">Sign in</a></li>
+              <li><a href="/registrations/new">Register</a></li>
+            <% end %>
+          </ul>
+        </nav>
+      </header>
+      <div class="sub-header">
+        <a href="/h/all">/h/all</a>&nbsp;&nbsp;
+      </div>
+
+      <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
+      <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
+      <p class="alert-temp" role="alert"></p>
+
+      <main role="main" class="main-content">
+        <%= render @view_module, @view_template, assigns %>
+      </main>
+
+    </div> <!-- /container -->
+    <script src="<%= Routes.static_path(@conn, "/js/app.js") %>"></script>
+  </body>
+</html>
