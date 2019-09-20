@@ -56,7 +56,22 @@ defmodule Gabbler.MixProject do
       {:syn, "~> 1.6"},
       {:earmark, "~> 1.4"},
       {:simplestatex, "~> 0.3.0"},
-      {:quantum, "~> 2.3"}
+      {:quantum, "~> 2.3"}|
+      env_deps(Mix.env())
     ]
   end
+
+  defp env_deps(:dev) do
+    [
+      {:gabbler_data, path: "../gabbler_data", env: :dev}
+    ]
+  end
+
+  defp env_deps(env) when env in [:stage, :prod] do
+    [
+      {:gabbler_data, "~> 0.1.0", env: Mix.env()}
+    ]
+  end
+
+  defp env_deps(_), do: []
 end

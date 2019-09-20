@@ -1,0 +1,20 @@
+<div class="room-title" id="room" data-name="<%= @room.name %>"><%= @room.name %></div>
+<div class="description">
+  <%= raw @room.description %> 
+</div>
+
+<%= if @room_type == "room" do %>
+  <div class="room-control">
+    <a href="/r/<%= @room.name %>/view/new">View New</a> | <a href="/r/<%= @room.name %>">View Hot</a>
+  </div>
+<% end %>
+
+<div class="posts">
+  <%= if Enum.count(@posts) do %>
+    <%= for post <- @posts do %>
+      <!--<%= render SmileysWeb.SharedView, "post_summary.html", [{:post, post}, {:room, assigns[:room].name}] %>-->
+    <% end %>
+  <% else %>
+    <div>Nothing here yet!</div>
+  <% end %>
+</div>

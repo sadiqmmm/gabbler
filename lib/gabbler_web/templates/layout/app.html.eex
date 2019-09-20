@@ -32,8 +32,8 @@
               <li><a href="/u/<%= assigns[:user].name %>"><%= assigns[:user].name %></a></li>
               <li><a href="/">Log out</a></li>
             <% else %>
-              <li><a href="/sessions/new">Sign in</a></li>
-              <li><a href="/registrations/new">Register</a></li>
+              <!--<li><a href="/sessions/new">Sign in</a></li>
+              <li><a href="/registrations/new">Register</a></li>-->
             <% end %>
           </ul>
         </nav>
