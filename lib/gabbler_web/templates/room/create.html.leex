@@ -1,56 +1,68 @@
-<%= Phoenix.View.render(GabblerWeb.RoomView, "index.html", assigns) %>
-
 <div class="form-sidebar">
-  <%= form_for @changeset, "new", fn f -> %>
+  <form action="#" phx-submit="submit" phx-change="update_room">
     <%= if @changeset.action do %>
       <div class="alert alert-danger">
-        <p>Something went wrong. Errors are listed below.</p>
+        <p><%= dgettext "errors", "Something went wrong. Errors are listed below." %></p>
+      </div>
+    <% end %>
+
+    <%= if @updated do %>
+      <div class="info">
+        <p><%= gettext "Successful update" %></p>
       </div>
     <% end %>
 
     <div class="form-group">
-      <%= label f, :name, class: "control-label" %>
-      <%= text_input f, :name, class: "form-control" %>
-      <%= error_tag f, :name %>
-      <div class="form-description">The name is also your unique url. Use letters only and no spaces or special characters. We keep the right in our code of ethics to take a name from people in some circumstances, please review <a href="#" target="_blank">our terms and admin code</a>.</div>
+      <label class="control-label" for="room_name">Name</label>
+      <input class="form-control" autofocus id="room_name" name="room[name]" type="text" value="<%= @room.name %>" />
+      <div class="form-description"><%= gettext "This name is used for your unique room url. Use letters only and no spaces or special characters." %></div>
+      <div class="form-error"><%= show_error(Keyword.get(@changeset.errors, :name)) %></div>
     </div>
 
     <div class="form-group">
-      <%= label f, :title, class: "control-label" %>
-      <%= text_input f, :title, class: "form-control" %>
-      <%= error_tag f, :title %>
-      <div class="form-description">A longer (shorter is good but 250 characters max) title that displays prominently near in your room.</div>
+      <label class="control-label" for="room_title">Title</label>
+      <input class="form-control" id="room_title" name="room[title]" type="text" value="<%= @room.title %>" />
+      <div class="form-description"><%= gettext "A longer (250 character max) title that displays prominently. Use HTML IMG w/link for image banner." %></div>
+      <div class="form-error"><%= show_error(Keyword.get(@changeset.errors, :title)) %></div>
     </div>
 
     <div class="form-group">
-      <%= label f, :description, class: "control-label" %>
-      <%= text_input f, :description, class: "form-control" %>
-      <%= error_tag f, :description %>
-      <div class="form-description">A description of up to 500 characters.</div>
+      <label class="control-label" for="room_description">Description</label>
+      <input class="form-control" id="room_description" name="room[description]" type="text" value="<%= @room.description %>" />
+      <div class="form-description"><%= gettext "A description of up to 500 characters." %></div>
+      <div class="form-error"><%= show_error(Keyword.get(@changeset.errors, :description)) %></div>
     </div>
 
     <div class="form-group">
-      <%= label f, :type, class: "control-label" %>
-      <br /><input type="radio" name="room[type]" id="room_type_public" value="public" /> Public<br />
-      <input type="radio" name="room[type]" id="room_type_restricted" value="restricted" /> Restricted <br />
-      <input type="radio" name="room[type]" id="room_type_private" value="private" /> Private <br /><br />
-      <%= error_tag f, :type %>
-      <div class="form-description">Public: everyone can see it and subscribe. Restricted: everyone can look but only subscribers you allow can post. Private: Nobody can even look at this unless you enter their user name into a form and allow them access. Admins of this site can always check out your room so keep that in mind and know <a href="#" target="_blank">our terms and admin code</a>.</div>
+      <label class="control-label" for="room_type">Type</label>
+      <input type="radio" name="room[type]" id="room_type_public" value="public" checked="checked" />
+      <div class="radio-label">Public</div>
+      <input type="radio" name="room[type]" id="room_type_restricted" value="restricted" />
+      <div class="radio-label">Restricted</div>
+      <input type="radio" name="room[type]" id="room_type_private" value="private" />
+      <div class="radio-label">Private</div>
+      <div class="form-description clear"><%= gettext "Public: everyone can see it and subscribe. Restricted: everyone can see but only authorized can post. Private: Nobody can see unless authorized to. Admins can view all to monitor site policy." %></div>
     </div>
 
     <div class="form-group">
-      <%= label f, :age, class: "control-label" %>
-      <%= number_input f, :age, class: "form-control" %>
-      <%= error_tag f, :age %>
-      <div class="form-description">The minimum age to be here in the room. 0 means you don't care. Use good sense and if anything mature goes on here please help us protect younger folk. You have to get this right so the room doesn't end up destroyed.</div>
+      <label class="control-label" for="room_age">Age</label>
+      <input class="form-control" id="room_age" name="room[age]" type="number">
+      <div class="form-description"><%= gettext "The minimum age. 0/Blank means any." %></div>
+      <div class="form-error"><%= show_error(Keyword.get(@changeset.errors, :age)) %></div>
     </div>
 
-    <div class="form-group">
-    <%= raw Recaptcha.Template.display %>
-    </div>
+    <%= if Application.get_env(:gabbler, :captcha, :off) == :on do %>
+      <div class="form-group captcha">
+        <%= raw Recaptcha.Template.display(hl: Application.get_env(:gettext, :default_locale, "en"),
+          noscript: true) %>
+      </div>
+    <% end %>
 
     <div class="form-group">
-      <%= submit "Submit", class: "btn btn-primary" %>
+      <%= case @mode do %>
+        <% :create -> %><button class="btn btn-primary" type="submit">Submit</button>
+        <% :update -> %><button class="btn btn-primary" type="submit">Update</button>
+      <% end %>
     </div>
-  <% end %>
+  </form>
 </div>

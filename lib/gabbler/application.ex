@@ -6,16 +6,11 @@ defmodule Gabbler.Application do
   use Application
 
   def start(_type, _args) do
-    # List all child processes to be supervised
     children = [
-      # Start the endpoint when the application starts
+      GabblerData.Repo,
       GabblerWeb.Endpoint
-      # Starts a worker by calling: Gabbler.Worker.start_link(arg)
-      # {Gabbler.Worker, arg},
     ]
 
-    # See https://hexdocs.pm/elixir/Supervisor.html
-    # for other strategies and supported options
     opts = [strategy: :one_for_one, name: Gabbler.Supervisor]
     Supervisor.start_link(children, opts)
   end

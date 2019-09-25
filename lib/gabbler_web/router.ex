@@ -23,31 +23,24 @@ defmodule GabblerWeb.Router do
     get "/about", PageController, :about
     get "/tos", PageController, :tos
 
-    get "/h/:room", PageController, :house
-    get "/r/:room", PageController, :room
-    get "/r/:room/view/:mode", PageController, :room
-    get "/r/:room/comments/:hash/:title", PageController, :comments
-    get "/r/:room/comments/:hash/:title/view/:mode", PageController, :comments
-    get "/r/:room/comments/:hash/:title/focus/:focushash", PageController, :comments
-    get "/r/:room/comments/:hash/", PageController, :comments
-    get "/r/:room/comments/:hash/view/:mode", PageController, :comments
-    get "/r/:room/comments/:hash/focus/:focushash", PageController, :comments
+    get "/h/:room", RoomController, :house
+    get "/r/:room", RoomController, :room
+    get "/r/:room/view/:mode", RoomController, :room
     get "/room/new", RoomController, :new
-    get "/room/:roomname/edit", RoomController, :edit
 
-    get "/room/:roomname/manage", RoomManageController, :manage
-    get "/room/:roomname/manage/mods", RoomManageController, :manage_mods
-    post "/room/:roomname/new", RoomManageController, :allowuser
-    post "/room/:roomname/manage/mods/new", RoomManageController, :addmod
-    get "/room/:roomname/removeuser/:username", RoomManageController, :removeuser
-    get "/room/:roomname/removemod/:username", RoomManageController, :removemod
+    #get "/room/:roomname/manage", RoomManageController, :manage
+    #get "/room/:roomname/manage/mods", RoomManageController, :manage_mods
+    #post "/room/:roomname/new", RoomManageController, :allowuser
+    #post "/room/:roomname/manage/mods/new", RoomManageController, :addmod
+    #get "/room/:roomname/removeuser/:username", RoomManageController, :removeuser
+    #get "/room/:roomname/removemod/:username", RoomManageController, :removemod
 
-    get "/r/:room/newpost", RoomPostController, :new
-    post "/r/:room/new", RoomPostController, :create
-    get "/h/:room/newpost", RoomPostController, :new
-    post "/h/:room/newpost", RoomPostController, :create
-
-    post "/post/:hash/comment", PostController, :comment
-    post "/post/mod/:hash/comment", PostController, :mod_delete_comment
+    get "/r/:room/new_post", PostController, :new
+    get "/r/:room/comments/:hash/:title", PostController, :post
+    get "/r/:room/comments/:hash/:title/view/:mode", PostController, :post
+    get "/r/:room/comments/:hash/", PostController, :post
+    get "/r/:room/comments/:hash/view/:mode", PostController, :post
+    get "/r/:room/comments/:hash/:title/focus/:focushash", PostController, :comment
+    get "/r/:room/comments/:hash/focus/:focushash", PostController, :comment
   end
 end

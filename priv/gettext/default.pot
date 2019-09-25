@@ -1,0 +1,67 @@
+## This file is a PO Template file.
+##
+## `msgid`s here are often extracted from source code.
+## Add new translations manually only if they're dynamic
+## translations that can't be statically extracted.
+##
+## Run `mix gettext.extract` to bring this file up to
+## date. Leave `msgstr`s empty as changing them here as no
+## effect: edit them in PO (`.po`) files instead.
+msgid ""
+msgstr ""
+
+#, elixir-format
+#: lib/gabbler_web/templates/room/create.html.leex:18
+msgid "This name is used for your unique room url. Use letters only and no spaces or special characters."
+msgstr ""
+
+#, elixir-format
+#: lib/gabbler_web/templates/room/create.html.leex:32
+msgid "A description of up to 500 characters."
+msgstr ""
+
+#, elixir-format
+#: lib/gabbler_web/templates/room/create.html.leex:44
+msgid "Public: everyone can see it and subscribe. Restricted: everyone can see but only authorized can post. Private: Nobody can see unless authorized to. Admins can view all to monitor site policy."
+msgstr ""
+
+#, elixir-format
+#: lib/gabbler_web/templates/room/create.html.leex:50
+msgid "The minimum age. 0/Blank means any."
+msgstr ""
+
+#, elixir-format
+#: lib/gabbler_web/templates/room/create.html.leex:25
+msgid "A longer (250 character max) title that displays prominently. Use HTML IMG w/link for image banner."
+msgstr ""
+
+#, elixir-format
+#: lib/gabbler_web/templates/post/create.html.leex:17
+#: lib/gabbler_web/templates/room/create.html.leex:11
+msgid "Successful update"
+msgstr ""
+
+#, elixir-format
+#: lib/gabbler_web/templates/post/create.html.leex:31
+msgid "alphanumeric and .,?!:;-\" allowed as well as markdown"
+msgstr ""
+
+#, elixir-format
+#: lib/gabbler_web/templates/post/create.html.leex:38
+msgid "appropriate link to other content"
+msgstr ""
+
+#, elixir-format
+#: lib/gabbler_web/templates/post/create.html.leex:46
+msgid "images will be resized and thumbed automatically"
+msgstr ""
+
+#, elixir-format
+#: lib/gabbler_web/templates/post/create.html.leex:24
+msgid "please use letters, numbers and -.,?!:)(#][+$"
+msgstr ""
+
+#, elixir-format
+#: lib/gabbler_web/templates/post/create.html.leex:54
+msgid "user letters, numbers and spaces in a comma separated list of up to 4 tags that help with search"
+msgstr ""

@@ -1,0 +1,63 @@
+<div id="original-post" class="original-post">
+  <div class="vote hash">
+    <div class="arrow-up vote-up"></div>
+    <div class="vote-count"><%= @post.score_public %></div>
+    <div class="arrow-down vote-down"></div>
+  </div>
+
+  <div class="op-title">
+    <a href="/r/<%= @room.name %>">/r/<%= @room.name %></a>
+      <%= @post.title %> - <strong><a href="/u/<%= @post_user.name %>"><%= @post_user.name %></a></strong> 
+
+      <%= if @parent do %>
+        <a href="/r/<%= @room.name %>/comments/<%= @post.hash %>/focus/<%= @parent.hash %>">Parent</a> | 
+      <% end %>
+      
+      <a href="/r/@room.name %>/comments/<%= @post.hash %>/<%= @post.title %>/view/new">View New</a> | 
+        <a href="/r/<%= @room.name %>/comments/<%= @post.hash %>/<%= @post.title %>">View Hot</a> 
+  </div>
+
+  <div class="op-content">
+    <div class="op-body">
+      <%= if @post_meta.image do %>
+        <div><img src="<%= @post_meta.image %>" class="post-image" /></div><br />
+      <% end %>
+
+      <%= if @post_meta.link do %>
+        <p><a href="<%= @post_meta.link %>"><%= @post_meta.link %></a></p>
+      <% end %>
+
+      <%= if @post_meta.tags do %>
+        <p>Tags Used: <strong><%= @post_meta.tags %></strong></p>
+      <% end %>
+
+      <p><%= if @post.body do %>
+        <%= raw @post.body |> String.replace("\r", "<br/>") %>
+      <% end %></p>
+    </div>
+  </div>
+  
+  <div class="op-content">
+    <span class="time-blatant">Posted <%= posted_at(@post.inserted_at) %></span>
+
+    <div class="op-actions">
+      <a href="#" class="reply" data-hash="<%= @post.hash %>">Comment</a>
+
+      <%= if @mod do %>
+        <a href="#" class="moddelete mod-action">Delete</a>
+      <% end %>
+
+      <div class="hidden interactive">| <a href="#" class="load-thread" data-hash="<%= @post.hash %>">New</a></div>
+    </div>
+  </div>
+
+  <div class="op-reply" id="comment-reply-<%= @post.hash %>" data-commentdepth="0"></div>
+</div>
+
+<div class="comments">
+  <%= for _comment <- @comments do %>
+    <!-- render comment -->
+  <% end %>
+</div>
+
+<div class="end-spacer"></div>

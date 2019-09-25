@@ -13,7 +13,7 @@
     <title>Gabbler: Build your community</title>
 
     <%= if Guardian.Plug.current_token(@conn) do %>
-      <meta name='guardian_token' content="<%= Guardian.Plug.current_token(@conn) %>">
+      <meta name="guardian_token" content="<%= Guardian.Plug.current_token(@conn) %>">
     <% end %>
   </head>
 
@@ -27,13 +27,11 @@
 
         <nav role="navigation">
           <ul class="nav nav-pills pull-right">
-            <%= if assigns[:user] do %>
+            <%= if @user do %>
+              <li><a href="/u/<%= @user.name %>"><%= @user.name %></a></li>
               <li><a href="/room/new">Create a Room</a></li>
-              <li><a href="/u/<%= assigns[:user].name %>"><%= assigns[:user].name %></a></li>
-              <li><a href="/">Log out</a></li>
             <% else %>
-              <!--<li><a href="/sessions/new">Sign in</a></li>
-              <li><a href="/registrations/new">Register</a></li>-->
+              <li><a href="/sessions/new">Sign in</a></li>
             <% end %>
           </ul>
         </nav>
