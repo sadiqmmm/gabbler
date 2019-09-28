@@ -4,6 +4,7 @@ defmodule GabblerWeb.Live.Post.New do
   """
   use Phoenix.LiveView
 
+  alias Gabbler.PostCreation
   alias GabblerData.{Post, User, PostMeta}
   alias GabblerData.Query.Post, as: QueryPost
 
@@ -48,27 +49,14 @@ defmodule GabblerWeb.Live.Post.New do
 
   def handle_event("update_post", _, socket), do: {:noreply, socket}
 
-  def handle_event("submit", _, %{assigns: %{changeset: changeset, changeset_meta: changeset_meta, updated: updated, mode: :update}} = socket) do
-    update_set = case QueryPost.update(changeset) do
-      {:ok, post} ->
-        [post: post, changeset: Post.changeset(post), mode: :update, updated: true]
-      {:error, changeset} ->
-        [changeset: changeset]
-    end
-
-    update_meta_set = case QueryPost.update_meta(changeset_meta) do
-      {:ok, post_meta} ->
-        [post_meta: post_meta, changeset_meta: Post.changeset(post_meta), mode: :update, updated: true, updated: update_updated(updated)]
-      {:error, changeset} ->
-        [changeset_meta: changeset]
-    end
-    
-    {:noreply, assign(socket, Keyword.merge(update_set, update_meta_set))}
-  end
-
-  def handle_event("submit", _, %{assigns: %{changeset: changeset, changeset_meta: changeset_meta, updated: updated, mode: :create}} = socket) do
-    case QueryPost.create(changeset, changeset_meta) do
+  def handle_event("submit", _, %{
+    assigns: %{mode: :create, room: %{name: room_name} = room, 
+    changeset: changeset, changeset_meta: changeset_meta, updated: updated
+  }} = socket) do
+    case QueryPost.create(PostCreation.prepare_changeset(room, changeset), changeset_meta) do
       {:ok, {post, meta}} ->
+        GabblerWeb.Endpoint.broadcast("room_live:#{room_name}", "new_post", %{:post => post, :meta => meta})
+
         {:noreply, assign(socket, 
           post: post,
           post_meta: meta,
@@ -83,6 +71,26 @@ defmodule GabblerWeb.Live.Post.New do
     end
   end
 
+  def handle_event("submit", _, %{assigns: %{
+    mode: :update, changeset: changeset, changeset_meta: changeset_meta, updated: updated
+  }} = socket) do
+    update_set = case QueryPost.update(changeset) do
+      {:ok, post} ->
+        [post: post, changeset: Post.changeset(post), mode: :update, updated: true]
+      {:error, changeset} ->
+        [changeset: changeset]
+    end
+
+    update_meta_set = case QueryPost.update_meta(changeset_meta) do
+      {:ok, post_meta} ->
+        [post_meta: post_meta, changeset_meta: PostMeta.changeset(post_meta), updated: true, updated: update_updated(updated)]
+      {:error, changeset} ->
+        [changeset_meta: changeset]
+    end
+    
+    {:noreply, assign(socket, Keyword.merge(update_set, update_meta_set))}
+  end
+
   def handle_event("submit", _, %{assigns: %{mode: :create}} = socket) do
     {:noreply, socket}
   end
@@ -94,9 +102,9 @@ defmodule GabblerWeb.Live.Post.New do
     user = User.mock_data()
 
     assign(socket, 
-      changeset: Post.changeset(%Post{parent_id: room_id, parent_type: "room"}),
+      changeset: Post.changeset(%Post{user_id_post: user.id, parent_id: room_id, parent_type: "room"}),
       changeset_meta: PostMeta.changeset(%PostMeta{user_id: user.id}),
-      post: %Post{},
+      post: %Post{user_id_post: user.id},
       body: "",
       post_meta: %PostMeta{user_id: user.id},
       comments: [],

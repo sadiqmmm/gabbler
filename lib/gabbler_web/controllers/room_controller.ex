@@ -12,6 +12,20 @@ defmodule GabblerWeb.RoomController do
     live_render(conn, GabblerWeb.Live.Room.New, session: params)
   end
 
+  def room(conn, %{"room" => name, "mode" => "live"}) do
+    case QueryRoom.get(name) do
+      nil -> room_404(conn)
+      room -> live_render(conn, GabblerWeb.Live.Room.Index, session: %{room: room, mode: :live})
+    end
+  end
+
+  def room(conn, %{"room" => name, "mode" => "new"}) do
+    case QueryRoom.get(name) do
+      nil -> room_404(conn)
+      room -> live_render(conn, GabblerWeb.Live.Room.Index, session: %{room: room, mode: :new})
+    end
+  end
+
   def room(conn, %{"room" => name}) do
     case QueryRoom.get(name) do
       nil -> room_404(conn)

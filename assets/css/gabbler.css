@@ -49,14 +49,17 @@ nav li {
 nav a {
   color: #fff;
   font-size: 12px;
-  background-color: #3984e2;
+  background-color: #9797a7;
   padding: 3px;
   text-align: center;
   border-radius: 5px;
-  border: 2px solid #E9BF2D;
+  border: 2px solid #3a5471;
   text-decoration: none;
   display: block;
   margin: 5px 4px 5px 0;
+  height: 47px;
+  width: 54px;
+  line-height: 23px;
 }
 nav ul{
   position: absolute;
@@ -259,6 +262,16 @@ nav ul{
   max-width: 100%;
   height: auto;
 }
+.room-fact {
+  padding: 5px;
+  background-color: #e29739;
+  margin: 11px 0;
+  border-radius: 5px;
+  border: 2px solid #3a5471;
+  color: #FFF;
+  font-weight: bold;
+  text-align: center;
+}
 .description .indented {
   padding: 10px;
 }
@@ -267,7 +280,7 @@ nav ul{
   width: 80%;
 }
 .post {
-  margin: 20px 5px;
+  margin: 26px 5px;
   width: 80%;
   min-height: 60px;
   overflow: hidden;
@@ -545,10 +558,7 @@ nav ul{
 
 .sidebar .site-actions a {
   display: block;
-  border-left: 1px dotted #444240;
-  border-right: 1px dotted #444240;
-  border-top: 1px dotted #444240;
-  border-bottom: 1px dotted #444240;
+  border: 2px dotted #275d98;
   background-color: #377ab7;
   text-align: center;
   padding: 3px;
@@ -557,6 +567,7 @@ nav ul{
   font-weight: bold;
   font-size: 18px;
   margin-bottom: 10px;
+  border-radius: 5px;
 }
 .sidebar .site-actions a:hover {
   background-color: #104473;

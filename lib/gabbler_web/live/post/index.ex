@@ -12,8 +12,15 @@ defmodule GabblerWeb.Live.Post.Index do
     ~L"""
       <%= Phoenix.View.render(GabblerWeb.PostView, "index.html", assigns) %>
 
-      <%= Phoenix.View.render(GabblerWeb.UserView, "menu.html", %{room: @room, user: @user, mod: false}) %>
+      <%= Phoenix.View.render(GabblerWeb.UserView, "sidebar.html", %{room: @room, user: @user, mod: false, user_count: @user_count}) %>
     """
+  end
+
+  def handle_info(%{event: "presence_diff", payload: _}, %{assigns: %{room: %{name: name}}} = socket) do
+    user_count = Presence.list("room:#{name}")
+    |> Enum.count()
+
+    {:noreply, assign(socket, user_count: user_count)}
   end
 
   @doc """
@@ -25,8 +32,13 @@ defmodule GabblerWeb.Live.Post.Index do
 
   # PRIV
   #############################
-  defp init(%{:room => room, :post => post}, socket) do
+  defp init(%{:room => %{name: room_name} = room, :post => post}, socket) do
     user = User.mock_data()
+
+    Presence.track(self(), "room:#{room_name}", user.id, %{name: user.name})
+
+    user_count = Presence.list("room:#{room_name}")
+    |> Enum.count()
 
     assign(socket,
       post: post,
@@ -37,6 +49,7 @@ defmodule GabblerWeb.Live.Post.Index do
       user: user,
       post_user: user,
       parent: nil,
-      mod: false)
+      mod: false,
+      user_count: user_count)
   end
 end

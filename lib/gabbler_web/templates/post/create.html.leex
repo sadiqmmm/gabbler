@@ -18,42 +18,46 @@
       </div>
     <% end %>
 
-    <div class="form-group">
-      <label class="control-label" for="post_title">Title</label>
-      <input class="form-control" autofocus id="post_title" name="post[title]" type="text" value="<%= @post.title %>" />
-      <div class="form-description"><%= gettext "please use letters, numbers and -.,?!:)(#][+$" %></div>
-      <div class="form-error"><%= show_error(Keyword.get(@changeset.errors, :title)) %></div>
-    </div>
+    <%= Phoenix.View.render(GabblerWeb.FormView, "input_text.html", %{changeset: @changeset, changeset_key: :title,
+      title: "title",
+      type: "post",
+      desc: gettext("please use letters, numbers and -.,?!:)(#][+$"), 
+      value: @post.title,
+      autofocus: "autofocus"}) %>
 
-    <div class="form-group">
-      <label class="control-label" for="post_body">Body (optional)</label>
-      <textarea class="form-control" id="post_body" name="post[body]"><%= raw @body %></textarea>
-      <div class="form-description"><%= gettext "alphanumeric and .,?!:;-\" allowed as well as markdown" %></div>
-      <div class="form-error"><%= show_error(Keyword.get(@changeset.errors, :body)) %></div>
-    </div>
+    <%= Phoenix.View.render(GabblerWeb.FormView, "input_textarea.html", %{
+      changeset: @changeset, 
+      changeset_key: :body,
+      title: "body",
+      type: "post",
+      desc: gettext("alphanumeric and .,?!:;-\" allowed as well as markdown"), 
+      value: @post.body}) %>
 
-    <div class="form-group">
-      <label class="control-label" for="post_meta_link">Link (optional)</label>
-      <input class="form-control" id="post_meta_link" name="post_meta[link]" type="text" value="<%= @post_meta.link %>" />
-      <div class="form-description"><%= gettext "appropriate link to other content" %></div>
-      <div class="form-error"><%= show_error(Keyword.get(@changeset_meta.errors, :link)) %></div>
-    </div>
+    <%= Phoenix.View.render(GabblerWeb.FormView, "input_text.html", %{
+      changeset: @changeset_meta, 
+      changeset_key: :link,
+      title: "link",
+      type: "post_meta",
+      desc: gettext("(optional) appropriate link to other content"), 
+      value: @post_meta.link}) %>
 
     <%= if (@uploads != :off) do %>
-      <div class="form-group">
-        <label class="control-label" for="post_meta_image">Image (optional)</label>
-        <input class="form-control" id="post_meta_image" name="post_meta[image]" type="file" />
-        <div class="form-description"><%= gettext "images will be resized and thumbed automatically" %></div>
-        <div class="form-error"><%= show_error(Keyword.get(@changeset_meta.errors, :image)) %></div>
-      </div>
+      <%= Phoenix.View.render(GabblerWeb.FormView, "input_upload.html", %{
+        changeset: @changeset_meta, 
+        changeset_key: :image,
+        title: "image",
+        type: "post_meta",
+        desc: gettext("(optional) images will be resized and thumbed automatically"), 
+        value: @post_meta.image}) %>
     <% end %>
 
-    <div class="form-group">
-      <label class="control-label" for="post_meta_tags">Tags (optional)</label>
-      <input class="form-control" id="post_meta_tags" name="post_meta[tags]" type="text" value="<%= @post_meta.tags %>" />
-      <div class="form-description"><%= gettext "user letters, numbers and spaces in a comma separated list of up to 4 tags that help with search" %></div>
-      <div class="form-error"><%= show_error(Keyword.get(@changeset_meta.errors, :tags)) %></div>
-    </div>
+    <%= Phoenix.View.render(GabblerWeb.FormView, "input_text.html", %{
+      changeset: @changeset_meta, 
+      changeset_key: :tags,
+      title: "tags",
+      type: "post_meta",
+      desc: gettext("(optional) user letters, numbers and spaces in a comma separated list of up to 4 tags that help with search"), 
+      value: @post_meta.tags}) %>
 
     <%= if Application.get_env(:gabbler, :captcha, :off) == :on do %>
       <div class="form-group captcha">

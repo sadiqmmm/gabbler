@@ -29,7 +29,7 @@
           <ul class="nav nav-pills pull-right">
             <%= if @user do %>
               <li><a href="/u/<%= @user.name %>"><%= @user.name %></a></li>
-              <li><a href="/room/new">Create a Room</a></li>
+              <li><a href="/room/new">Create Room</a></li>
             <% else %>
               <li><a href="/sessions/new">Sign in</a></li>
             <% end %>

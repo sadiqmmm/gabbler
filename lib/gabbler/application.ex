@@ -8,7 +8,8 @@ defmodule Gabbler.Application do
   def start(_type, _args) do
     children = [
       GabblerData.Repo,
-      GabblerWeb.Endpoint
+      GabblerWeb.Endpoint,
+      GabblerWeb.Presence
     ]
 
     opts = [strategy: :one_for_one, name: Gabbler.Supervisor]

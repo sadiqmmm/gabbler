@@ -1,0 +1,23 @@
+<div class="sidebar">
+  <div class="site-actions">
+    <div class="room-fact">
+      <%= @user_count %> online here
+    </div>
+    <%= if @room do %>
+      <a href="/r/<%= @room.name %>/new_post">Post</a>
+    <% end %>
+
+    <%= if @room do %>
+      <a href="#" class="room-subscribe" data-room="<%= @room.name %>">Subscribe</a>
+    <% end %>
+
+    <%= if @mod do %>
+      <a href="/room/<%= @room.name %>/edit">Edit Room</a>
+      <a href="/room/<%= @room.name %>/manage">Manage Room</a>
+    <% end %>
+  </div>
+
+  <div class="sidebar-links sidebar-links-last">
+    <div class="room-link"><a href="/about">About Smiley's Pub</a></div>
+  </div>
+</div>
