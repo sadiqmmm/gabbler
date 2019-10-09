@@ -4,16 +4,23 @@ defmodule Gabbler.Plug.UserSession do
   """
   import Plug.Conn
 
-  alias GabblerData.User
+  alias Gabbler.Auth.Guardian
 
 
   def init(_), do: :ok
 
   def call(conn, _default) do
-    #user = Guardian.Plug.current_resource(conn)
+    user = Guardian.Plug.current_resource(conn)
 
-    #claims = Guardian.Plug.current_claims(conn)
+    case user do
+      nil ->
+        {conn, token} = Guardian.gen_temp_token(conn)
 
-    assign(conn, :user, User.mock_data())
+        assign(conn, :user, nil)
+        |> assign(:temp_token, token)
+      user -> 
+        assign(conn, :user, user)
+        |> Guardian.clear_temp_token()
+    end
   end
 end

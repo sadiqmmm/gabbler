@@ -7,10 +7,14 @@ defmodule GabblerWeb.PostView do
     Timex.format!(datetime, "{relative}", :relative)
   end
 
-  def show_error(nil), do: ""
-  def show_error({msg, opts}) do
-    Enum.reduce(opts, msg, fn {key, value}, acc ->
-      String.replace(acc, "%{#{key}}", to_string(value))
-    end)
+  def display_post_body(%{body: body}), do: Earmark.as_html!(body)
+  |> String.replace("\r", "<br/>")
+
+  def get_post_body(changeset) do
+    case Ecto.Changeset.fetch_field(changeset, :body) do
+      {:changes, body} -> body
+      {:data, body} -> body
+      _ -> ""
+    end
   end
 end

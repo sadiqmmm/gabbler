@@ -10,7 +10,10 @@
     <meta name="msapplication-TileColor" content="#da532c">
     <meta name="theme-color" content="#ffffff">
 
-    <title>Gabbler: Build your community</title>
+    <title>
+      <%= Application.get_env(:gabbler, :page_title, "Gabbler") %>: 
+      <%= Application.get_env(:gabbler, :page_desc, "Build Your Community") %>
+    </title>
 
     <%= if Guardian.Plug.current_token(@conn) do %>
       <meta name="guardian_token" content="<%= Guardian.Plug.current_token(@conn) %>">
@@ -25,16 +28,7 @@
 
         <div id="search"></div>
 
-        <nav role="navigation">
-          <ul class="nav nav-pills pull-right">
-            <%= if @user do %>
-              <li><a href="/u/<%= @user.name %>"><%= @user.name %></a></li>
-              <li><a href="/room/new">Create Room</a></li>
-            <% else %>
-              <li><a href="/sessions/new">Sign in</a></li>
-            <% end %>
-          </ul>
-        </nav>
+        <%= live_render(@conn, GabblerWeb.Live.User.Menu, session: %{user: assigns[:user], temp_token: assigns[:temp_token]}) %>
       </header>
       <div class="sub-header">
         <a href="/h/all">/h/all</a>&nbsp;&nbsp;
@@ -49,6 +43,8 @@
       </main>
 
     </div> <!-- /container -->
+    <%= live_render(@conn, GabblerWeb.Live.User.Auth, 
+      session: %{user: assigns[:user], temp_token: assigns[:temp_token]}) %>
     <script src="<%= Routes.static_path(@conn, "/js/app.js") %>"></script>
   </body>
 </html>

@@ -73,6 +73,93 @@ nav ul{
   clear: both;
 }
 
+.button-action {
+  border: 2px dotted #275d98;
+  background-color: #377ab7;
+  text-align: center;
+  padding: 3px;
+  text-decoration: none;
+  color: #fff;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.negation {
+  background-color: #9A3600;
+}
+
+/* AUTH */
+.login-container {
+  display: table;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 10;
+  width: 100%;
+  height: 100%;
+  opacity: 1;
+  background-image: url("/images/background/gabbler-overlay.png");
+}
+.login-middle {
+  display: table-cell;
+  vertical-align: middle;
+}
+.login {
+  margin-left: auto;
+  margin-right: auto;
+  width: 600px;
+  padding: 25px;
+  background-color: #E9BF2D;
+  border-radius: 5px;
+  border: 2px solid #9A7800;
+  color: #083465;
+}
+.login #user_password {
+  margin-left: 68px;
+}
+.login #user_username {
+  margin-left: 64px;
+}
+.login h2 {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+.login h2 a {
+  text-decoration: none;
+}
+.login p {
+  font-weight: bold;
+}
+.login label {
+  font-weight: bold;
+}
+.login input {
+  border: 2px solid #2d527c;
+  border-radius: 5px;
+  height: 27px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+.login .form-group {
+  margin: 30px 0;
+}
+.login .form-description {
+  margin: 5px 0;
+}
+.login-form-actions {
+  width: 100%;
+  text-align: center;
+}
+.login-form-actions a {
+  padding: 3px 23px;
+}
+.login-form-actions .button-action {
+  width: 104px;
+  height: 26px;
+  margin: 0 5px;
+}
+
+/* END AUTH */
+
 .end-float { clear: both; }
 .end-spacer { height: 80px; width: 1px; }
 
@@ -423,10 +510,6 @@ nav ul{
 }
 .op-actions a {
   cursor: pointer;
-  background-color: white;
-    padding: 10px;
-    border: 1px solid #184b6f;
-    border-radius: 4px;
 }
 .op-content {
   clear: both;
@@ -446,7 +529,13 @@ nav ul{
 .comments {
   clear: both;
 }
+.comments .vote {
+  margin-right: 14px;
+}
 
+.comment-text {
+  padding-top: 7px;
+}
 .comment-text .text {
   margin-bottom: 14px;
 }
@@ -455,13 +544,14 @@ nav ul{
   display: block;
   max-width: 75%;
   padding: 10px;
+  margin-bottom: 6px;
 }
 .comment-depth-1 {
 
 }
 .comment-depth-2 {
   margin-left: 50px;
-  border: 1px dashed #3d3d48;
+  border: 1px dashed #e29739;
   max-width: calc(75% - 50px);
 }
 .comment-depth-3 {
@@ -470,7 +560,7 @@ nav ul{
 }
 .comment-depth-4 {
   margin-left: 150px;
-  border: 1px dashed #3d3d48;
+  border: 1px dashed #e29739;
   max-width: calc(75% - 150px);
 }
 .comment-depth-5 {
@@ -479,7 +569,7 @@ nav ul{
 }
 .comment-depth-6 {
   margin-left: 250px;
-  border: 1px dashed #3d3d48;
+  border: 1px dashed #e29739;
   max-width: calc(75% - 250px);
 }
 .comment-depth-7 {
@@ -488,7 +578,7 @@ nav ul{
 }
 .comment-depth-8 {
   margin-left: 350px;
-  border: 1px dashed #3d3d48;
+  border: 1px dashed #e29739;
   max-width: calc(75% - 350px);
 }
 .comment-depth-9 {
@@ -497,22 +587,46 @@ nav ul{
 }
 .comment-depth-10 {
   margin-left: 450px;
-  border: 1px dashed #3d3d48;
+  border: 1px dashed #e29739;
   max-width: calc(75% - 450px);
 }
 
+.comment-reply-form-bottom,
 .comment-reply-form {
   width: 70%;
   text-align: center;
-  margin: 6px;
 }
+.comment-reply-form-bottom {
+  width: 100%;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  height: 200px;
+  border-top: 2px solid #9A3600;
+  background-image: url("/images/background/gabbler-overlay-bright.png");
+}
+.comment-reply-form-bottom label,
+.comment-reply-form label {
+  display: none;
+}
+.comment-reply-form-bottom textarea,
 .comment-reply-form textarea {
   width: 100%;
+  height: 60px;
+  border: 1px solid #377ab7;
+  border-radius: 5px;
+}
+.comment-reply-form-bottom textarea {
+  width: 80%;
+  margin-top: 20px;
 }
 .comment-reply-form-actions {
   width: 100%;
   text-align: right;
   margin: 6px;
+}
+.comment-reply-form-bottom .comment-reply-form-actions {
+  width: 90%;
 }
 
 .op-reply {
@@ -558,16 +672,8 @@ nav ul{
 
 .sidebar .site-actions a {
   display: block;
-  border: 2px dotted #275d98;
-  background-color: #377ab7;
-  text-align: center;
-  padding: 3px;
-  text-decoration: none;
-  color: #fff;
-  font-weight: bold;
   font-size: 18px;
   margin-bottom: 10px;
-  border-radius: 5px;
 }
 .sidebar .site-actions a:hover {
   background-color: #104473;

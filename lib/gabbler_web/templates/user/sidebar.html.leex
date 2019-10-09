@@ -4,11 +4,8 @@
       <%= @user_count %> online here
     </div>
     <%= if @room do %>
-      <a href="/r/<%= @room.name %>/new_post">Post</a>
-    <% end %>
-
-    <%= if @room do %>
-      <a href="#" class="room-subscribe" data-room="<%= @room.name %>">Subscribe</a>
+      <a href="/r/<%= @room.name %>/new_post" class="button-action">Post</a>
+      <a href="#" class="button-action">Subscribe</a>
     <% end %>
 
     <%= if @mod do %>
@@ -18,6 +15,6 @@
   </div>
 
   <div class="sidebar-links sidebar-links-last">
-    <div class="room-link"><a href="/about">About Smiley's Pub</a></div>
+    <div class="room-link"><a href="/about">About <%= Application.get_env(:gabbler, :page_title) %></a></div>
   </div>
 </div>

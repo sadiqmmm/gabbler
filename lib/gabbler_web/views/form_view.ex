@@ -7,4 +7,8 @@ defmodule GabblerWeb.FormView do
       String.replace(acc, "%{#{key}}", to_string(value))
     end)
   end
+
+  def capitalize_all(string) do
+    Enum.join(Enum.map(String.split(string, "_"), &String.capitalize(&1)), " ")
+  end
 end

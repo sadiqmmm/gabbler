@@ -1,0 +1,32 @@
+<div class="comment comment-depth-<%= @comment.depth %>">
+  <div class="vote hash vote-<%= @comment.hash %>">
+    <div class="arrow-up vote-up"></div>
+    <div class="vote-count vote-count-<%= @comment.hash %>"><%= @comment.score_public %></div>
+    <div class="arrow-down vote-down"></div>
+  </div>
+
+  <div class="comment-text">
+    <div class="text">    
+      <strong><a href="/u/<%= @comment.name %>"><%= @comment.name %></a></strong>
+      <span class="time-subtle"><%= Timex.format!(@comment.inserted_at, "{relative}", :relative) %></span>:
+      <span class="textbody"><%= raw(@comment.body) %></span>
+    </div>
+    <div class="actions">
+      <%= if @comment.depth < Application.get_env(:gabbler, :max_comment_depth, 7) do %>
+        <a href="#" class="reply" phx-click="reply_comment" phx-value-to="<%= @comment.hash %>">Reply</a> | 
+      <% end %>
+      <a href="/r/<%= @room.name %>/comments/<%= @op.hash %>/<%= @op.title %>/focus/<%= @comment.hash %>">Focus</a>
+      <%= if @user && @comment.user_id_post == @user.id do %>
+        | <a href="#" class="edit">Edit</a>
+      <% end %>
+      <%= if @comment.depth == 1 do %>
+        | <a href="#" class="collapse-thread">Collapse</a>
+      <% end %>
+      <%= if @mod do %>
+        | <a href="#" class="moddelete mod-action">Delete</a>
+      <% end %>
+    </div>
+  </div>
+
+  <div id="comment-reply-<%= @comment.hash %>"></div>
+</div>

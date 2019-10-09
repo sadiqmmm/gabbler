@@ -42,18 +42,8 @@ msgid "Successful update"
 msgstr ""
 
 #, elixir-format
-#: lib/gabbler_web/templates/post/create.html.leex:31
+#: lib/gabbler_web/templates/post/create.html.leex:33
 msgid "alphanumeric and .,?!:;-\" allowed as well as markdown"
-msgstr ""
-
-#, elixir-format
-#: lib/gabbler_web/templates/post/create.html.leex:38
-msgid "appropriate link to other content"
-msgstr ""
-
-#, elixir-format
-#: lib/gabbler_web/templates/post/create.html.leex:46
-msgid "images will be resized and thumbed automatically"
 msgstr ""
 
 #, elixir-format
@@ -62,6 +52,41 @@ msgid "please use letters, numbers and -.,?!:)(#][+$"
 msgstr ""
 
 #, elixir-format
-#: lib/gabbler_web/templates/post/create.html.leex:54
-msgid "user letters, numbers and spaces in a comma separated list of up to 4 tags that help with search"
+#: lib/gabbler_web/templates/post/create.html.leex:41
+msgid "(optional) appropriate link to other content"
+msgstr ""
+
+#, elixir-format
+#: lib/gabbler_web/templates/post/create.html.leex:50
+msgid "(optional) images will be resized and thumbed automatically"
+msgstr ""
+
+#, elixir-format
+#: lib/gabbler_web/templates/post/create.html.leex:59
+msgid "(optional) user letters, numbers and spaces in a comma separated list of up to 4 tags that help with search"
+msgstr ""
+
+#, elixir-format
+#: lib/gabbler_web/templates/user/login.html.leex:44
+msgid "Confirm your password"
+msgstr ""
+
+#, elixir-format
+#: lib/gabbler_web/templates/user/login.html.leex:36
+msgid "Must be at least 9 characters"
+msgstr ""
+
+#, elixir-format
+#: lib/gabbler_web/templates/user/login.html.leex:9
+msgid "Some actions require an account. Login or create one here."
+msgstr ""
+
+#, elixir-format
+#: lib/gabbler_web/templates/user/login.html.leex:17
+msgid "This is your unique handle used across the site"
+msgstr ""
+
+#, elixir-format
+#: lib/gabbler_web/templates/user/login.html.leex:27
+msgid "Your email can optionally be used for subscriptions and login"
 msgstr ""

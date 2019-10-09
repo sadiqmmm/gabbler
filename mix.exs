@@ -47,6 +47,8 @@ defmodule Gabbler.MixProject do
       
       {:phoenix_live_view, "~> 0.2.0"},
       {:guardian, "~> 2.0"},
+      {:comeonin, "~> 5.1"},
+      {:argon2_elixir, "~> 2.0"},
       {:cachex, "~> 3.2"},
       {:thumbnex, "~> 0.3.1"},
       {:html_sanitize_ex, "~> 1.3"},

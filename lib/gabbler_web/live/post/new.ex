@@ -95,6 +95,10 @@ defmodule GabblerWeb.Live.Post.New do
     {:noreply, socket}
   end
 
+  def handle_event("reply", _, socket) do
+    {:noreply, socket}
+  end
+
 
   # PRIV
   #############################
@@ -121,11 +125,9 @@ defmodule GabblerWeb.Live.Post.New do
   end
 
   defp update_post_assign(:body, value, %{assigns: %{post: post, changeset: changeset}} = socket) do
-    # :post is viewable version so gets html+sanitized version, :body is editable so keeps raw form, and
-    # the changeset needs to store raw form for future editing so gets sanitized version.
     sanitized_value = HtmlSanitizeEx.strip_tags(value)
 
-    post = Map.put(post, :body, sanitized_value |> Earmark.as_html!())
+    post = Map.put(post, :body, sanitized_value)
 
     assign(socket, 
       post: post,
