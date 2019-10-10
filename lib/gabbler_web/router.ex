@@ -11,8 +11,8 @@ defmodule GabblerWeb.Router do
     plug Gabbler.Auth.Pipeline
   end
 
-  pipeline :ensure_auth do
-    plug Guardian.Plug.EnsureAuthenticated
+  pipeline :auth do
+    plug Gabbler.Auth.Pipeline
   end
 
   pipeline :api do
@@ -20,19 +20,20 @@ defmodule GabblerWeb.Router do
   end
 
   scope "/", GabblerWeb do
-    pipe_through :browser
+    pipe_through [:browser, :auth]
 
+    # GABBLER
     get "/", PageController, :index
-    get "/u/:username", PageController, :profile
-    get "/u/:username/settings", PageController, :settings
     get "/about", PageController, :about
     get "/tos", PageController, :tos
 
+    # ROOM
     get "/h/:room", RoomController, :house
     get "/r/:room", RoomController, :room
     get "/r/:room/view/:mode", RoomController, :room
     get "/room/new", RoomController, :new
 
+    # ROOM -> ROOM MANAGEMENT
     #get "/room/:roomname/manage", RoomManageController, :manage
     #get "/room/:roomname/manage/mods", RoomManageController, :manage_mods
     #post "/room/:roomname/new", RoomManageController, :allowuser
@@ -40,6 +41,7 @@ defmodule GabblerWeb.Router do
     #get "/room/:roomname/removeuser/:username", RoomManageController, :removeuser
     #get "/room/:roomname/removemod/:username", RoomManageController, :removemod
 
+    # ROOM -> POST
     get "/r/:room/new_post", PostController, :new
     get "/r/:room/comments/:hash/:title", PostController, :post
     get "/r/:room/comments/:hash/:title/view/:mode", PostController, :post
@@ -47,5 +49,12 @@ defmodule GabblerWeb.Router do
     get "/r/:room/comments/:hash/view/:mode", PostController, :post
     get "/r/:room/comments/:hash/:title/focus/:focushash", PostController, :comment
     get "/r/:room/comments/:hash/focus/:focushash", PostController, :comment
+
+    # USER
+    post "/u/session/new", UserController, :new
+    get "/u/session/new", UserController, :index
+    get "/u/session/delete", UserController, :delete
+    get "/u/:username", UserController, :profile
+    get "/u/:username/settings", UserController, :settings
   end
 end

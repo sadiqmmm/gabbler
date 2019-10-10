@@ -4,10 +4,7 @@ defmodule Gabbler.Auth.ErrorHandler do
 
 
   @impl Guardian.Plug.ErrorHandler
-  def auth_error(conn, {type, reason}, _opts) do
-    IO.inspect "AUTH ERROR"
-    IO.inspect type
-    IO.inspect reason
+  def auth_error(conn, {type, _reason}, _opts) do
     body = to_string(type)
 
     conn

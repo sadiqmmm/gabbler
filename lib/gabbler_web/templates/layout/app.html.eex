@@ -32,6 +32,7 @@
       </header>
       <div class="sub-header">
         <a href="/h/all">/h/all</a>&nbsp;&nbsp;
+        <a href="/r/gabbler_testing">/r/gabbler_testing</a>&nbsp;&nbsp;
       </div>
 
       <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
@@ -44,7 +45,7 @@
 
     </div> <!-- /container -->
     <%= live_render(@conn, GabblerWeb.Live.User.Auth, 
-      session: %{user: assigns[:user], temp_token: assigns[:temp_token]}) %>
+      session: %{user: assigns[:user], temp_token: assigns[:temp_token], csrf: Phoenix.Controller.get_csrf_token()}) %>
     <script src="<%= Routes.static_path(@conn, "/js/app.js") %>"></script>
   </body>
 </html>

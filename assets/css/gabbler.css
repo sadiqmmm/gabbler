@@ -41,6 +41,10 @@ body a {
   color: #3984e2;
 }
 
+nav {
+  position: relative;
+}
+
 nav li {
   float: right;
   margin: 0 3px;
@@ -49,17 +53,17 @@ nav li {
 nav a {
   color: #fff;
   font-size: 12px;
-  background-color: #9797a7;
-  padding: 3px;
+  background-color: #C24E10;
+  padding: 0 5px;
   text-align: center;
   border-radius: 5px;
   border: 2px solid #3a5471;
   text-decoration: none;
   display: block;
   margin: 5px 4px 5px 0;
-  height: 47px;
-  width: 54px;
-  line-height: 23px;
+  height: 40px;
+  min-width: 54px;
+  line-height: 40px;
 }
 nav ul{
   position: absolute;
@@ -71,6 +75,31 @@ nav ul{
 }
 .clear {
   clear: both;
+}
+
+nav .menu {
+  position: absolute;
+  top: 45px;
+  right: 2px;
+  z-index: 100;
+}
+.menu a,
+nav .menu .menu-item {
+  width: 300px;
+  min-height: 40px;
+  background-color: #C24E10;
+  color: #FFF;
+  margin: 0 5px;
+  border-radius: 0;
+  border-bottom: none;
+}
+.menu a:first-child {
+  border-top-left-radius: 5px;
+}
+.menu a:last-child {
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+  border-bottom: 2px solid #3a5471;
 }
 
 .button-action {
@@ -144,6 +173,10 @@ nav ul{
 }
 .login .form-description {
   margin: 5px 0;
+}
+.login .form-error {
+  color: #9a3600;
+  font-weight: bold;
 }
 .login-form-actions {
   width: 100%;
@@ -728,26 +761,15 @@ nav ul{
 .alert:empty { display: none; }
 
 /*
- * Smileys flash messages
+ * Gabbler flash messages
  */
- .alert-temp {
-  display: none;
-  margin: auto;
-  position: fixed;
-  left: 0; 
-  right: 0;
-    top: 0; 
-    bottom: 0;
-    width: 350px;
-    height: 80px;
-    vertical-align: middle;
-    background-color: #afafaf;
-    opacity: 0.9;
-    border-radius: 8px;
-    padding: 9px 5px;
-    text-align: center;
-    z-index: 10000;
- }
+.alert-info {
+  background-color: #3984e2;
+  color: #fff;
+  margin: 0;
+  padding: 15px;
+  font-weight: bold;
+}
 
 /* 
  * Inline forms in links and buttons 

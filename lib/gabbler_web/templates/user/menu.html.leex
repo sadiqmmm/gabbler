@@ -1,10 +1,17 @@
 <nav role="navigation">
   <ul class="nav nav-pills pull-right">
     <%= if @user do %>
-      <li><a href="/u/<%= @user.name %>"><%= @user.name %></a></li>
-      <li><a href="/room/new">Create Room</a></li>
+      <li><a href="#" phx-click="toggle_menu"><%= @user.name %></a></li>
     <% else %>
       <li><a href="#" phx-click="login">Sign in</a></li>
     <% end %>
   </ul>
+
+  <%= if @menu_open do %>
+    <div class="menu">
+      <a href="/room/new">Create Room</a>
+      <a href="/u/<%= @user.name %>">/u/<%= @user.name %></a>
+      <a href="/u/session/delete">Sign Out</a>
+    </div>
+  <% end %>
 </nav>

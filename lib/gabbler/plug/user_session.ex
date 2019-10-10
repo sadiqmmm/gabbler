@@ -20,7 +20,6 @@ defmodule Gabbler.Plug.UserSession do
         |> assign(:temp_token, token)
       user -> 
         assign(conn, :user, user)
-        |> Guardian.clear_temp_token()
     end
   end
 end

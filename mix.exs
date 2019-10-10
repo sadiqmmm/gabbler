@@ -46,7 +46,7 @@ defmodule Gabbler.MixProject do
       {:timex, "~> 3.6", override: true},
       
       {:phoenix_live_view, "~> 0.2.0"},
-      {:guardian, "~> 2.0"},
+      {:guardian, "~> 1.2"},
       {:comeonin, "~> 5.1"},
       {:argon2_elixir, "~> 2.0"},
       {:cachex, "~> 3.2"},
@@ -58,7 +58,8 @@ defmodule Gabbler.MixProject do
       {:syn, "~> 1.6"},
       {:earmark, "~> 1.4"},
       {:simplestatex, "~> 0.3.0"},
-      {:quantum, "~> 2.3"}|
+      {:quantum, "~> 2.3"},
+      {:httpotion, "~> 3.1.0"}|
       env_deps(Mix.env())
     ]
   end

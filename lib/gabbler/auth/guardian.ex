@@ -5,12 +5,12 @@ defmodule Gabbler.Auth.Guardian do
   alias GabblerData.Query.User, as: QueryUser
 
 
-  def subject_for_token(user, _claims) do
-    {:ok, to_string(user.id)}
+  def subject_for_token(%{id: user_id}, _claims) do
+    {:ok, to_string(user_id)}
   end
 
   def resource_from_claims(%{"sub" => id}) do
-    case QueryUser.get(id) do
+    case QueryUser.get(String.to_integer(id)) do
       nil -> {:error, :resource_not_found}
       user -> {:ok, user}
     end
@@ -33,8 +33,6 @@ defmodule Gabbler.Auth.Guardian do
   end
 
   def gen_temp_token(conn), do: conn
-
-  def clear_temp_token(conn), do: Plug.Conn.clear_session(conn)
 
   #def build_claims(claims, _resource, opts) do
   #  claims = claims

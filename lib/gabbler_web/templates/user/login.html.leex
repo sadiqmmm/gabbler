@@ -2,57 +2,64 @@
   <div class="login-container">
     <div class="login-middle">
       <div class="login">
-        <h2>
-          <a href="#" phx-click="login_mode" phx-value-mode="login">Login</a> | 
-          <a href="#" phx-click="login_mode" phx-value-mode="register">Register</a>
-        </h2>
-        <p><%= gettext("Some actions require an account. Login or create one here.") %></p>
-        
-        <form action="#" class="login-form " phx-submit="login" phx-change="login_change">
-          <%= Phoenix.View.render(GabblerWeb.FormView, "input_text.html", %{
-            changeset: @changeset_user, 
-            changeset_key: :name,
-            title: "username",
-            type: "user",
-            desc: gettext("This is your unique handle used across the site"), 
-            value: @user.name,
-            autofocus: "autofocus"}) %>
+        <%= if @mode == :logout do %>
+          <%= form_for @changeset_user, "/u/session/delete", [class: "login-form", csrf_token: @csrf] %>
+              <button class="btn btn-primary button-action" type="submit">Logout</button>
+            </form>
+        <% else %>
+          <h2>
+            <a href="#" phx-click="login_mode" phx-value-mode="login">Login</a> | 
+            <a href="#" phx-click="login_mode" phx-value-mode="register">Register</a>
+          </h2>
+          <p><%= gettext("Some actions require an account. Login or create one here.") %></p>
 
-          <%= if Application.get_env(:gabbler, :user_email, false) do %>
+          <%= form_for @changeset_user, "/u/session/new", 
+          [phx_change: :login_change, class: "login-form", csrf_token: @csrf] %>
             <%= Phoenix.View.render(GabblerWeb.FormView, "input_text.html", %{
-              changeset: @changeset_user,
-              changeset_key: :email,
-              title: "email",
+              changeset: @changeset_user, 
+              changeset_key: :name,
+              title: "username",
               type: "user",
-              desc: gettext("Your email can optionally be used for subscriptions and login"), 
-              value: @user.email}) %>
-          <% end %>
+              desc: gettext("This is your unique handle used across the site"), 
+              value: @user.name,
+              autofocus: "autofocus"}) %>
 
-          <%= Phoenix.View.render(GabblerWeb.FormView, "input_password.html", %{
-            changeset: @changeset_user, 
-            changeset_key: :password_hash,
-            title: "password",
-            type: "user",
-            desc: gettext("Must be at least 9 characters")}) %>
+            <%= if Application.get_env(:gabbler, :user_email, false) do %>
+              <%= Phoenix.View.render(GabblerWeb.FormView, "input_text.html", %{
+                changeset: @changeset_user,
+                changeset_key: :email,
+                title: "email",
+                type: "user",
+                desc: gettext("Your email can optionally be used for subscriptions and login"), 
+                value: @user.email}) %>
+            <% end %>
 
-          <%= if @mode == :register do %>
             <%= Phoenix.View.render(GabblerWeb.FormView, "input_password.html", %{
               changeset: @changeset_user, 
-              changeset_key: :password_hash_confirm,
-              title: "password_confirm",
+              changeset_key: :password_hash,
+              title: "password",
               type: "user",
-              desc: gettext("Confirm your password")}) %>
-          <% end %>
+              desc: gettext("Must be at least 9 characters")}) %>
 
-          <div class="login-form-actions">
-            <a href="#" class="login-cancel button-action negation" phx-click="login_hide">Cancel</a>
             <%= if @mode == :register do %>
-              <button class="btn btn-primary button-action" type="submit">Register</button>
-            <% else %>
-              <button class="btn btn-primary button-action" type="submit">Login</button>
+              <%= Phoenix.View.render(GabblerWeb.FormView, "input_password.html", %{
+                changeset: @changeset_user, 
+                changeset_key: :password_hash_confirm,
+                title: "password_confirm",
+                type: "user",
+                desc: gettext("Confirm your password")}) %>
             <% end %>
-          </div>
-        </form>
+
+            <div class="login-form-actions">
+              <a href="#" class="login-cancel button-action negation" phx-click="login_hide">Cancel</a>
+              <%= if @mode == :register do %>
+                <button class="btn btn-primary button-action" type="submit">Register</button>
+              <% else %>
+                <button class="btn btn-primary button-action" type="submit">Login</button>
+              <% end %>
+            </div>
+          </form>
+        <% end %>
       </div>
     </div>
   </div>

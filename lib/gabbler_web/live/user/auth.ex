@@ -6,9 +6,6 @@ defmodule GabblerWeb.Live.User.Auth do
   import GabblerWeb.Live.UtilSocket, only: [update_assign: 5]
 
   alias GabblerData.User
-  alias GabblerData.Query.User, as: QueryUser
-
-  alias Gabbler.Auth.Guardian
 
 
   def render(assigns) do
@@ -50,99 +47,29 @@ defmodule GabblerWeb.Live.User.Auth do
     {:noreply, update_assign(:changeset_user, :user, :email, email, socket)}
   end
 
-  def handle_event("login", %{"user" => %{"password" => _, "password_confirm" => _}}, 
-  %{assigns: %{changeset_user: changeset}} = socket) do
-    {:noreply, register(socket, changeset)}
-  end
-
-  def handle_event("login", _, %{assigns: %{changeset_user: changeset}} = socket) do
-    {:noreply, login(socket, changeset)}
-  end
-
-  def register(socket, changeset) do
-    case QueryUser.create(changeset) do
-      {:ok, user} ->
-        {:ok, token, _full_claims} = Guardian.encode_and_sign(user)
-
-        assign(socket, token: token)
-      {:error, error} ->
-        IO.inspect "REGISTER FAIL"
-        IO.inspect error
-        assign(socket, changeset_user: error)
-    end
-  end
-
-  def login(socket, changeset) do
-    name = case Ecto.Changeset.fetch_field(changeset, :name) do
-      {:changes, name} -> name
-      {:data, name} -> name
-      _ -> nil
-    end
-
-    password = case Ecto.Changeset.fetch_field(changeset, :password_hash) do
-      {:changes, password} -> password
-      {:data, password} -> password
-      _ -> nil
-    end
-
-    login(socket, name, password)
-  end
-
-  def login(socket, nil, _), do: socket
-  def login(socket, _, nil), do: socket
-
-  def login(socket, name, password) do
-    case QueryUser.authenticate(name, password) do
-      {:ok, user} ->
-        Guardian.Plug.sign_in(socket, Guardian, user)
-      {:error, error} ->
-        IO.inspect "LOGIN FAIL"
-        IO.inspect error
-        assign(socket, changeset_user: error)
-    end
-  end
-
-  def logout(socket, _) do
-    #conn
-    Guardian.Plug.sign_out(socket, Guardian)
-    #|> redirect(to: "/login")
-
-    #conn
-    #|> put_flash(:info, "Welcome back!")
-    #|> Guardian.Plug.sign_in(Guardian, user)
-    #|> redirect(to: "/secret")
-  end
-
   # PRIV
   #############################
-  defp init(%{user: %User{id: id} = user}, socket) do
+  defp init(%{user: %User{id: id} = user, csrf: csrf}, socket) do
     GabblerWeb.Endpoint.subscribe("user:#{id}")
 
     assign(socket,
       user: user,
       changeset_user: User.changeset(user),
-      mode: :login,
-      show_auth: false
+      mode: :logout,
+      show_auth: false,
+      csrf: csrf
     )
   end
 
-  defp init(%{temp_token: temp_token}, socket) do
+  defp init(%{temp_token: temp_token, csrf: csrf}, socket) do
     GabblerWeb.Endpoint.subscribe("user:#{temp_token}")
 
     assign(socket,
       user: %User{},
       changeset_user: User.changeset(%User{}),
       mode: :login,
-      show_auth: false
-    )
-  end
-
-  defp init(_, socket) do
-    assign(socket,
-      user: %User{},
-      changeset_user: User.changeset(%User{}),
-      mode: :login,
-      show_auth: false
+      show_auth: false,
+      csrf: csrf
     )
   end
 end
