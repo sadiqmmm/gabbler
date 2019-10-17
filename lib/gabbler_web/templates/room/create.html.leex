@@ -12,26 +12,30 @@
       </div>
     <% end %>
 
-    <div class="form-group">
-      <label class="control-label" for="room_name">Name</label>
-      <input class="form-control" autofocus id="room_name" name="room[name]" type="text" value="<%= @room.name %>" />
-      <div class="form-description"><%= gettext "This name is used for your unique room url. Use letters only and no spaces or special characters." %></div>
-      <div class="form-error"><%= show_error(Keyword.get(@changeset.errors, :name)) %></div>
-    </div>
+    <%= Phoenix.View.render(GabblerWeb.FormView, "input_text.html", %{
+      changeset: @changeset, 
+      changeset_key: :name,
+      title: "name",
+      type: "room",
+      desc: gettext("This name is used for your unique room url. Use letters only and no spaces or special characters."), 
+      value: @room.name,
+      autofocus: "autofocus"}) %>
 
-    <div class="form-group">
-      <label class="control-label" for="room_title">Title</label>
-      <input class="form-control" id="room_title" name="room[title]" type="text" value="<%= @room.title %>" />
-      <div class="form-description"><%= gettext "A longer (250 character max) title that displays prominently. Use HTML IMG w/link for image banner." %></div>
-      <div class="form-error"><%= show_error(Keyword.get(@changeset.errors, :title)) %></div>
-    </div>
+    <%= Phoenix.View.render(GabblerWeb.FormView, "input_text.html", %{
+      changeset: @changeset, 
+      changeset_key: :title,
+      title: "title",
+      type: "room",
+      desc: gettext("A longer (250 character max) title that displays prominently. Use HTML IMG w/link for image banner."), 
+      value: @room.title}) %>
 
-    <div class="form-group">
-      <label class="control-label" for="room_description">Description</label>
-      <input class="form-control" id="room_description" name="room[description]" type="text" value="<%= @room.description %>" />
-      <div class="form-description"><%= gettext "A description of up to 500 characters." %></div>
-      <div class="form-error"><%= show_error(Keyword.get(@changeset.errors, :description)) %></div>
-    </div>
+    <%= Phoenix.View.render(GabblerWeb.FormView, "input_text.html", %{
+      changeset: @changeset, 
+      changeset_key: :description,
+      title: "description",
+      type: "room",
+      desc: gettext("A text description of up to 500 characters."), 
+      value: @room.description}) %>
 
     <div class="form-group">
       <label class="control-label" for="room_type">Type</label>

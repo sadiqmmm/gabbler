@@ -1,9 +1,5 @@
 <div class="post">
-  <div class="post-summary vote hash vote-<%= @post.hash %>">
-    <div class="arrow-up vote-up"></div>
-    <div class="vote-count"><%= @post.score_public %></div>
-    <div class="arrow-down vote-down"></div>
-  </div>
+  <%= render(GabblerWeb.PostView, "vote.html", %{post: @post}) %>
   
   <%= render(GabblerWeb.PostView, "preview_square.html", post_meta: @post_meta) %>
 

@@ -9,9 +9,24 @@
 
   <%= if @menu_open do %>
     <div class="menu">
-      <a href="/room/new">Create Room</a>
-      <a href="/u/<%= @user.name %>">/u/<%= @user.name %></a>
-      <a href="/u/session/delete">Sign Out</a>
+      <div class="options">
+        <a href="/room/new">Create Room</a>
+        <a href="/u/<%= @user.name %>">/u/<%= @user.name %></a>
+        <a href="/u/session/delete">Sign Out</a>
+      </div>
+      <div class="activity">
+        <h3>Subscriptions</h3>
+        <%= for sub <- @subscriptions do %>
+          <a href="/r/<%= sub %>">/r/<%= sub %></a>
+        <% end %>
+
+        <%= if Enum.count(@moderating) > 0 do %>
+          <h3>Moderating</h3>
+          <%= for mod_room <- @moderating do %>
+            <a href="/r/<%= mod_room %>">/r/<%= mod_room %></a>
+          <% end %>
+        <% end %>
+      </div>
     </div>
   <% end %>
 </nav>

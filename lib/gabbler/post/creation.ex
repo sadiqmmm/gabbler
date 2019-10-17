@@ -7,14 +7,14 @@ defmodule Gabbler.PostCreation do
   @doc """
   Prepare a Post Changeset for insertion to the database
   """
-  def prepare_changeset(%Room{} = room, changeset) do
+  def prepare_changeset(%Room{id: room_id} = room, changeset) do
     post_title = case Ecto.Changeset.fetch_field(changeset, :title) do
       {:changes, title} -> title
       {:data, title} -> title
       _ -> nil
     end
 
-    Ecto.Changeset.change(changeset, %{hash: get_hash(post_title, room)})
+    Ecto.Changeset.change(changeset, %{hash: get_hash(post_title, room), room_id: room_id})
   end
 
   @doc """

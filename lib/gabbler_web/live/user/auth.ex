@@ -49,9 +49,7 @@ defmodule GabblerWeb.Live.User.Auth do
 
   # PRIV
   #############################
-  defp init(%{user: %User{id: id} = user, csrf: csrf}, socket) do
-    GabblerWeb.Endpoint.subscribe("user:#{id}")
-
+  defp init(%{user: %User{} = user, csrf: csrf}, socket) do
     assign(socket,
       user: user,
       changeset_user: User.changeset(user),

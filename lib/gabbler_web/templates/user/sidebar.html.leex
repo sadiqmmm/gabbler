@@ -5,7 +5,11 @@
     </div>
     <%= if @room do %>
       <a href="/r/<%= @room.name %>/new_post" class="button-action">Post</a>
-      <a href="#" class="button-action">Subscribe</a>
+      <%= if @subscribed do %>
+        <a href="#" class="button-action" phx-click="unsubscribe">Unsubscribe /r/<%= @room.name %></a>
+      <% else %>
+        <a href="#" class="button-action" phx-click="subscribe">Subscribe /r/<%= @room.name %></a>
+      <% end %>
     <% end %>
 
     <%= if @mod do %>

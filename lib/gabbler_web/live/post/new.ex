@@ -102,15 +102,13 @@ defmodule GabblerWeb.Live.Post.New do
 
   # PRIV
   #############################
-  defp init(%{:room => %{:id => room_id} = room}, socket) do
-    user = User.mock_data()
-
+  defp init(%{room: %{id: room_id} = room, user: %{id: user_id} = user}, socket) do
     assign(socket, 
-      changeset: Post.changeset(%Post{user_id_post: user.id, parent_id: room_id, parent_type: "room"}),
-      changeset_meta: PostMeta.changeset(%PostMeta{user_id: user.id}),
-      post: %Post{user_id_post: user.id},
+      changeset: Post.changeset(%Post{user_id_post: user_id, parent_id: room_id, parent_type: "room"}),
+      changeset_meta: PostMeta.changeset(%PostMeta{user_id: user_id}),
+      post: %Post{user_id_post: user_id},
       body: "",
-      post_meta: %PostMeta{user_id: user.id},
+      post_meta: %PostMeta{user_id: user_id},
       comments: [],
       upload: nil,
       parent: nil,

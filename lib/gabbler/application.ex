@@ -6,14 +6,18 @@ defmodule Gabbler.Application do
   use Application
 
   def start(_type, _args) do
+    # Initialize syn, the global process registry
+    :syn.start()
+    :syn.init()
+
     children = [
       GabblerData.Repo,
       GabblerWeb.Endpoint,
-      GabblerWeb.Presence
+      GabblerWeb.Presence,
+      {Gabbler.User.Application, strategy: :one_for_one, name: :user_server}
     ]
 
-    opts = [strategy: :one_for_one, name: Gabbler.Supervisor]
-    Supervisor.start_link(children, opts)
+    Supervisor.start_link(children, [strategy: :one_for_one, name: Gabbler.Supervisor])
   end
 
   # Tell Phoenix to update the endpoint configuration

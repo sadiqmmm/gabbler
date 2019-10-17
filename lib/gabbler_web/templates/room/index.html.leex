@@ -18,7 +18,7 @@
   <%= if Enum.count(@posts) do %>
     <%= for %{id: post_id} = post <- @posts do %>
       <%= render @view_module, "post_summary.html", 
-        %{user: @user, post: post, room: @room, post_meta: @post_metas[post_id], comment_count: 0} %>
+        %{user: @users[post_id], post: post, room: @room, post_meta: @post_metas[post_id], comment_count: 0} %>
     <% end %>
   <% else %>
     <div>Nothing here yet!</div>

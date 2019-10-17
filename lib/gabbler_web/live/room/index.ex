@@ -2,10 +2,10 @@ defmodule GabblerWeb.Live.Room.Index do
   @moduledoc """
   The Room Creation LiveView form
   """
+  use GabblerWeb.Live.Room
+  use GabblerWeb.Live.Voting
   use Phoenix.LiveView
 
-  alias GabblerWeb.Presence
-  alias GabblerData.{Room, User}
   alias GabblerData.Query.Post, as: QueryPost
 
 
@@ -13,7 +13,7 @@ defmodule GabblerWeb.Live.Room.Index do
     ~L"""
       <%= Phoenix.View.render(GabblerWeb.RoomView, "index.html", assigns) %>
 
-      <%= Phoenix.View.render(GabblerWeb.UserView, "sidebar.html", %{room: @room, user: @user, mod: false, user_count: @user_count}) %>
+      <%= Phoenix.View.render(GabblerWeb.UserView, "sidebar.html", assigns) %>
     """
   end
 
@@ -21,38 +21,15 @@ defmodule GabblerWeb.Live.Room.Index do
     {:noreply, assign(socket, posts: [post|posts], post_metas: Map.put(metas, post.id, meta))}
   end
 
-  def handle_info(%{event: "presence_diff", payload: _}, %{assigns: %{room: %{name: name}}} = socket) do
-    user_count = Presence.list("room:#{name}")
-    |> Enum.count()
-
-    {:noreply, assign(socket, user_count: user_count)}
-  end
-
-  @doc """
-  Set default form and status of creation
-  """
-  def mount(session, socket) do
-    {:ok, init(session, socket)}
-  end
-
   # PRIV
   #############################
-  defp init(%{room: %{name: name} = room, mode: mode, posts: posts}, socket) do
-    user = User.mock_data()
-
-    Presence.track(self(), "room:#{name}", user.id, %{name: user.name})
-
-    user_count = Presence.list("room:#{name}")
-    |> Enum.count()
-
+  defp init(%{mode: mode, posts: posts, user: user}, socket) do
     assign(socket,
-      room: room,
-      room_type: "room",
       posts: posts,
       mode: mode,
       post_metas: QueryPost.map_meta(posts),
       user: user,
-      user_count: user_count
+      users: QueryPost.map_users(posts)
     )
   end
 
@@ -76,15 +53,5 @@ defmodule GabblerWeb.Live.Room.Index do
     posts = QueryPost.list(by_room: id, order_by: :score_private, limit: 20)
 
     init(Map.put(session, :posts, posts), socket)
-  end
-
-  defp init(_, socket) do
-    assign(socket,
-      room: %Room{type: "public", age: 0},
-      room_type: "room",
-      posts: [],
-      post_metas: %{},
-      user: User.mock_data()
-    )
   end
 end

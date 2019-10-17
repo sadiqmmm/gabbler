@@ -83,7 +83,7 @@ nav .menu {
   right: 2px;
   z-index: 100;
 }
-.menu a,
+.menu .options a,
 nav .menu .menu-item {
   width: 300px;
   min-height: 40px;
@@ -93,13 +93,27 @@ nav .menu .menu-item {
   border-radius: 0;
   border-bottom: none;
 }
-.menu a:first-child {
+.menu .options a:first-child {
   border-top-left-radius: 5px;
 }
-.menu a:last-child {
+.menu .activity {
+  background-color: #275d98;
+  margin: 0px 5px 0 5px;
+  padding: 5px 10px 15px 10px;
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
-  border-bottom: 2px solid #3a5471;
+}
+.menu .activity h3 {
+  margin: 8px 0 12px 0;
+  color: #FFF;
+}
+.menu .activity a {
+  color: #FFF;
+  line-height: 20px;
+  height: 20px;
+  border: none;
+  background: none;
+  text-align: left;
 }
 
 .button-action {

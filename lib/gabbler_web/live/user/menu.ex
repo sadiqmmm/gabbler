@@ -20,6 +20,22 @@ defmodule GabblerWeb.Live.User.Menu do
     {:ok, init(session, socket)}
   end
 
+  def handle_info(%{event: "subscribed", payload: %{"room_name" => name}}, %{assigns: %{user: user}} = socket) do
+    subscriptions = Gabbler.User.activity_subscribed(user, name)
+
+    {:noreply, assign(socket, subscriptions: subscriptions)}
+  end
+
+  def handle_info(%{event: "unsubscribed", payload: %{"room_name" => name}}, %{assigns: %{user: user}} = socket) do
+    subscriptions = Gabbler.User.activity_unsubscribed(user, name)
+
+    {:noreply, assign(socket, subscriptions: subscriptions)}
+  end
+
+  def handle_info(%{event: "warning", payload: %{msg: msg}}, socket) do
+    {:noreply, socket}
+  end
+
   def handle_event("login", _, %{assigns: %{temp_token: token}} = socket) do
     GabblerWeb.Endpoint.broadcast("user:#{token}", "login_show", %{})
 
@@ -41,7 +57,10 @@ defmodule GabblerWeb.Live.User.Menu do
 
     assign(socket,
       user: user,
-      menu_open: false
+      menu_open: false,
+      subscriptions: Gabbler.User.subscriptions(user),
+      moderating: Gabbler.User.moderating(user),
+      posts: Gabbler.User.posts(user)
     )
   end
 
@@ -50,5 +69,29 @@ defmodule GabblerWeb.Live.User.Menu do
       user: nil,
       temp_token: temp_token,
       menu_open: false)
+  end
+
+  defp subscribe_room(%{assigns: %{subscriptions: subscriptions}} = socket, room_name) do
+    case Map.get(subscriptions, "r#{room_name}") do
+      nil ->
+        assign(socket, 
+          subscriptions: Map.put(subscriptions, "r#{room_name}", GabblerWeb.Endpoint.subscribe("room_live:#{room_name}")))
+      :ok ->
+        socket
+      {:error, _error} ->
+        socket
+    end
+  end
+
+  defp subscribe_post(%{assigns: %{subscriptions: subscriptions}} = socket, hash) do
+    case Map.get(subscriptions, "p#{hash}") do
+      nil ->
+        assign(socket, 
+          subscriptions: Map.put(subscriptions, "p#{hash}", GabblerWeb.Endpoint.subscribe("post_live:#{hash}")))
+      :ok ->
+        socket
+      {:error, _error} ->
+        socket
+    end
   end
 end

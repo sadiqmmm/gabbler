@@ -1,9 +1,5 @@
 <div class="comment comment-depth-<%= @comment.depth %>">
-  <div class="vote hash vote-<%= @comment.hash %>">
-    <div class="arrow-up vote-up"></div>
-    <div class="vote-count vote-count-<%= @comment.hash %>"><%= @comment.score_public %></div>
-    <div class="arrow-down vote-down"></div>
-  </div>
+  <%= render @view_module, "vote.html", %{post: @comment} %>
 
   <div class="comment-text">
     <div class="text">    

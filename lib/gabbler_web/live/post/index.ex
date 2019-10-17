@@ -2,6 +2,8 @@ defmodule GabblerWeb.Live.Post.Index do
   @moduledoc """
   The Room Creation LiveView form
   """
+  use GabblerWeb.Live.Room
+  use GabblerWeb.Live.Voting
   use Phoenix.LiveView
   import GabblerWeb.Live.UtilSocket, only: [update_assign: 5]
 
@@ -9,21 +11,15 @@ defmodule GabblerWeb.Live.Post.Index do
   alias GabblerWeb.Presence
   alias GabblerData.{User, Post, PostMeta, Comment, Room}
   alias GabblerData.Query.Post, as: QueryPost
+  alias GabblerData.Query.User, as: QueryUser
 
 
   def render(assigns) do
     ~L"""
       <%= Phoenix.View.render(GabblerWeb.PostView, "index.html", assigns) %>
 
-      <%= Phoenix.View.render(GabblerWeb.UserView, "sidebar.html", %{room: @room, user: @user, mod: false, user_count: @user_count}) %>
+      <%= Phoenix.View.render(GabblerWeb.UserView, "sidebar.html", assigns) %>
     """
-  end
-
-  def handle_info(%{event: "presence_diff", payload: _}, %{assigns: %{room: %{name: name}}} = socket) do
-    user_count = Presence.list("room:#{name}")
-    |> Enum.count()
-
-    {:noreply, assign(socket, user_count: user_count)}
   end
 
   def handle_info(%{event: "new_reply", payload: %{post: comment}}, %{assigns: %{op: op, comments: comments}} = socket) do
@@ -78,13 +74,6 @@ defmodule GabblerWeb.Live.Post.Index do
     end
   end
 
-  @doc """
-  Set default form and status of creation
-  """
-  def mount(session, socket) do
-    {:ok, init(session, socket)}
-  end
-
   # PRIV
   #############################
   defp init(%{:mode => "hot"} = session, socket), do: init(Map.put(session, :mode, :hot), socket)
@@ -92,16 +81,11 @@ defmodule GabblerWeb.Live.Post.Index do
   defp init(%{:mode => "live", :post => %{:hash => op_hash}} = session, socket) do
     GabblerWeb.Endpoint.subscribe("post_live:#{op_hash}")
 
-    init(Map.put(session, :mode, :hot), socket)
+    init(Map.put(session, :mode, :new), socket)
   end
 
-  defp init(%{room: %{name: room_name, type: room_type} = room, post: post, mode: mode, op: op, focus_hash: focus_hash}, socket) do
-    user = User.mock_data()
-
-    Presence.track(self(), "room:#{room_name}", user.id, %{name: user.name})
-
-    user_count = Presence.list("room:#{room_name}")
-    |> Enum.count()
+  defp init(%{room: room, user: user, post: post, mode: mode, op: op, focus_hash: focus_hash}, socket) do
+    post_user = QueryUser.get(post.user_id_post)
 
     comments = QueryPost.thread(post, mode)
 
@@ -111,18 +95,14 @@ defmodule GabblerWeb.Live.Post.Index do
       op: op,
       mode: mode,
       comments: comments,
-      room: room,
-      room_type: room_type,
-      user: user,
-      post_user: user,
+      post_user: post_user,
       parent: nil,
       mod: false,
       reply_display: "hidden",
       reply_comment_display: "hidden",
       focus_hash: focus_hash,
       changeset_reply: default_reply_changeset(user, room, post),
-      reply: default_reply(user, room, post),
-      user_count: user_count)
+      reply: default_reply(user, room, post))
   end
 
   defp init(%{room: _, post: post, mode: _} = session, socket), do: init(Map.put(session, :op, post), socket)

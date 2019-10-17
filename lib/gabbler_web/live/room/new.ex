@@ -82,7 +82,8 @@ defmodule GabblerWeb.Live.Room.New do
           post_metas: PostMeta.mock_data(),
           mode: :update,
           updated: false,
-          user: User.mock_data())
+          user: User.mock_data(),
+          users: %{1 => User.mock_data(), 2 => User.mock_data(), 3 => User.mock_data()})
     end
   end
 
@@ -119,7 +120,8 @@ defmodule GabblerWeb.Live.Room.New do
       post_metas: PostMeta.mock_data(),
       mode: :create,
       updated: false,
-      user: User.mock_data()
+      user: User.mock_data(),
+      users: %{1 => User.mock_data(), 2 => User.mock_data(), 3 => User.mock_data()}
     ]
   end
 end

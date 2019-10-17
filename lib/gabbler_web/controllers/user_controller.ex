@@ -6,7 +6,6 @@ defmodule GabblerWeb.UserController do
   alias GabblerData.User
   alias GabblerData.Query.User, as: QueryUser
   alias GabblerData.Query.Post, as: QueryPost
-  alias GabblerData.Query.Room, as: QueryRoom
   alias Gabbler.Auth.Guardian
   
 
@@ -15,17 +14,17 @@ defmodule GabblerWeb.UserController do
   end
 
   def profile(conn, %{"username" => name}) do
-    case QueryUser.get(name) do
+    case QueryUser.get(URI.decode(name)) do
       nil -> 
         user_404(conn)
       %{id: user_id} = user ->
-        posts = QueryPost.list(by_user: user_id, order_by: :inserted_at)
+        posts = QueryPost.list(by_user: user_id, order_by: :inserted_at, only: :op)
 
-        rooms = Enum.reduce(posts, %{}, fn %{id: post_id, room_id: room_id}, acc ->
-          Map.put(acc, post_id, QueryRoom.get(room_id))
-        end)
-
-        render(conn, "profile.html", user: user, posts: posts, rooms: rooms, post_meta: QueryPost.map_meta(posts))
+        render(conn, "profile.html", 
+          user: user,
+          posts: posts, 
+          rooms: QueryPost.map_rooms(posts), 
+          post_metas: QueryPost.map_meta(posts))
     end
   end
 
