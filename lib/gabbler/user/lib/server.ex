@@ -20,15 +20,12 @@ defmodule Gabbler.User.Server do
       name: Gabbler.User.server_name(user))
   end
 
-  ## Callbacks
-
   @impl true
   def init(user_info) do
     {:ok, user_info}
   end
 
-  # Server
-  ###########################
+
   @impl true
   def handle_call(:retrieve_all, _from, %ActivityModel{} = state) do
     {:reply, state, state}
@@ -93,7 +90,6 @@ defmodule Gabbler.User.Server do
   @impl true
   def handle_call({:can_vote, hash}, _from, %ActivityModel{} = state) do
     state = prune_state(state)
-    votes = state.votes
     
     {:reply, can_vote?(state, hash), state}
   end
@@ -101,7 +97,6 @@ defmodule Gabbler.User.Server do
   @impl true
   def handle_call(:can_post, _from, %ActivityModel{} = state) do
     state = prune_state(state)
-    posts = state.posts
 
     {:reply, can_post?(state), state}
   end

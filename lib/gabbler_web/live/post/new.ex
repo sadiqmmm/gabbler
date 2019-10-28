@@ -5,7 +5,7 @@ defmodule GabblerWeb.Live.Post.New do
   use Phoenix.LiveView
 
   alias Gabbler.PostCreation
-  alias GabblerData.{Post, User, PostMeta}
+  alias GabblerData.{Post, PostMeta}
   alias GabblerData.Query.Post, as: QueryPost
 
 
@@ -50,11 +50,15 @@ defmodule GabblerWeb.Live.Post.New do
   def handle_event("update_post", _, socket), do: {:noreply, socket}
 
   def handle_event("submit", _, %{
-    assigns: %{mode: :create, room: %{name: room_name} = room, 
-    changeset: changeset, changeset_meta: changeset_meta, updated: updated
+    assigns: %{mode: :create, room: %{name: room_name} = room, user: user,
+    changeset: changeset, changeset_meta: changeset_meta, updated: updated,
   }} = socket) do
-    case QueryPost.create(PostCreation.prepare_changeset(room, changeset), changeset_meta) do
-      {:ok, {post, meta}} ->
+    case PostCreation.create(user, room, changeset, changeset_meta) do
+      {:ok, {%{hash: hash} = post, meta}} ->
+        _users_posts = Gabbler.User.activity_posted(user, hash)
+
+        _ = Gabbler.TagTracker.add_tags(post, meta)
+
         GabblerWeb.Endpoint.broadcast("room_live:#{room_name}", "new_post", %{:post => post, :meta => meta})
 
         {:noreply, assign(socket, 
@@ -68,6 +72,10 @@ defmodule GabblerWeb.Live.Post.New do
         {:noreply, assign(socket, changeset: changeset)}
       {:error, {:post_meta, changeset}} ->
         {:noreply, assign(socket, changeset_meta: changeset)}
+      {:error, error_str} ->
+        GabblerWeb.Endpoint.broadcast("user:#{user.id}", "warning", %{msg: error_str})
+
+        {:noreply, socket}
     end
   end
 

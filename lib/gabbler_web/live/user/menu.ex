@@ -32,7 +32,8 @@ defmodule GabblerWeb.Live.User.Menu do
     {:noreply, assign(socket, subscriptions: subscriptions)}
   end
 
-  def handle_info(%{event: "warning", payload: %{msg: msg}}, socket) do
+  def handle_info(%{event: "warning", payload: %{msg: _msg}}, socket) do
+    # TODO: create a container for the message and update state to activate it
     {:noreply, socket}
   end
 

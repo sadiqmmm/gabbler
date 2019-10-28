@@ -2,17 +2,29 @@ defmodule Gabbler.PostCreation do
   @moduledoc """
   Helping functions for Creating a Post
   """
+  import GabblerWeb.Gettext
+
   alias GabblerData.Room
+  alias GabblerData.Query.Post, as: QueryPost
+
+
+  @doc """
+  Handle post creation steps and reactions
+  """
+  def create(user, room, changeset, changeset_meta) do
+    case Gabbler.User.can_post?(user) do
+      true ->
+        QueryPost.create(prepare_changeset(room, changeset), changeset_meta)
+      false ->
+        {:error, dgettext("errors", "post not created. You may have reached a daily posting limit.")}
+    end
+  end
 
   @doc """
   Prepare a Post Changeset for insertion to the database
   """
   def prepare_changeset(%Room{id: room_id} = room, changeset) do
-    post_title = case Ecto.Changeset.fetch_field(changeset, :title) do
-      {:changes, title} -> title
-      {:data, title} -> title
-      _ -> nil
-    end
+    post_title = fetch_changeset_field(changeset, :title)
 
     Ecto.Changeset.change(changeset, %{hash: get_hash(post_title, room), room_id: room_id})
   end
@@ -28,5 +40,15 @@ defmodule Gabbler.PostCreation do
 
     Hashids.new([salt: title, min_len: 12])
     |> Hashids.encode([micro, room_id])
+  end
+
+  # PRIVATE FUNCTIONS
+  ###################
+  defp fetch_changeset_field(changeset, field, default \\ nil) do
+    case Ecto.Changeset.fetch_field(changeset, field) do
+      {:changes, value} -> value
+      {:data, value} -> value
+      _ -> default
+    end
   end
 end

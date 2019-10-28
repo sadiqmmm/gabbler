@@ -1,6 +1,6 @@
 defmodule GabblerWeb.Live.Room.Index do
   @moduledoc """
-  The Room Creation LiveView form
+  Liveview when someone is in a generic (non-special like tag tracker) room
   """
   use GabblerWeb.Live.Room
   use GabblerWeb.Live.Voting

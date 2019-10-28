@@ -28,7 +28,8 @@ defmodule GabblerWeb.Router do
     get "/tos", PageController, :tos
 
     # ROOM
-    get "/h/:room", RoomController, :house
+    get "/h/all", PageController, :index
+    get "/h/tag_tracker", PageController, :tag_tracker
     get "/r/:room", RoomController, :room
     get "/r/:room/view/:mode", RoomController, :room
     get "/room/new", RoomController, :new

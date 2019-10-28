@@ -297,6 +297,38 @@ nav .menu .menu-item {
 }
 
 /*
+ * TAGS
+ */
+.tag-tracker-status {
+  padding: 10px;
+  font-size: 13pt;
+}
+.tag-tracker-status span {
+  color: #c24e10;
+}
+.tag-tracker-form {
+  padding: 10px;
+}
+.tag-tracker-form input[type=text] {
+  border-radius: 5px;
+  border: 1px solid #275d98;
+  height: 24px;
+  width: 188px;
+  font-size: 18px;
+  padding: 5px;
+}
+.tag-tracker-form button {
+  height: 37px;
+  font-size: 16px;
+  color: #9A7800;
+  background-color: #E9BF2D;
+  border: 2px solid #9A7800;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/*
  * FORM
  */
 .form-sidebar {

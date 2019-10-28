@@ -13,7 +13,8 @@
         <a href="/r/<%= @room.name %>/comments/<%= @op.hash %>/focus/<%= @post.hash %>">
           @post.title
         </a>
-      <% end %> by <%= @user.name %>
+      <% end %>
+      by <%= @user.name %>
     </div>
     
     <div class="actions">
