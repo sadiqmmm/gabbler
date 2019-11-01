@@ -83,9 +83,20 @@ nav .menu {
   right: 2px;
   z-index: 100;
 }
+nav .warning {
+  position: absolute;
+  top: 43px;
+  right: 9px;
+  z-index: 110;
+  background-color: #C24E10;
+  color: #FFF;
+  border-radius: 5px;
+  border-top-right-radius: 0;
+  padding: 21px;
+}
 .menu .options a,
 nav .menu .menu-item {
-  width: 300px;
+  width: 305px;
   min-height: 40px;
   background-color: #C24E10;
   color: #FFF;
@@ -105,15 +116,28 @@ nav .menu .menu-item {
 }
 .menu .activity h3 {
   margin: 8px 0 12px 0;
-  color: #FFF;
+  color: #E9BF2D;
 }
 .menu .activity a {
+  max-width: 299px;
   color: #FFF;
   line-height: 20px;
   height: 20px;
   border: none;
   background: none;
   text-align: left;
+}
+.menu .activity div {
+  margin: 0 0 15px 0;
+  color: #FFF;
+  font-size: 9pt;
+  padding-left: 5px;
+}
+.menu .activity .user-mod:last-child
+.menu .activity .user-sub:last-child
+.menu .activity .new-activity:last-child
+.menu .activity .user-post:last-child {
+  margin-bottom: 15px;
 }
 
 .button-action {
@@ -294,6 +318,11 @@ nav .menu .menu-item {
   padding: 10px;
   font-family: "serif";
   font-size: 14px;
+}
+
+.static {
+  margin: 10px;
+  font-size: 14pt;
 }
 
 /*
@@ -728,6 +757,32 @@ nav .menu .menu-item {
   height: auto;
   background-color: #fff;
 }
+.sidebar h3 {
+  color: #3a5471;
+}
+.sidebar form {
+  margin: 18px 0;
+}
+.sidebar input {
+  float: left;
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+  border: 1px dashed #275d98;
+  height: 22px;
+  margin-top: 3px;
+  width: 78%;
+  text-align: center;
+}
+.sidebar button {
+  margin-top: 3px;
+  height: 26px;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+  border: none;
+  background-color: #275d98;
+  color: #FFF;
+  width: 21%;
+}
 
 .sidebar-nav {
   display: none;
@@ -758,12 +813,13 @@ nav .menu .menu-item {
   background-color: #104473;
 }
 
+.current-room,
 .site-actions {
   margin: 10px 20px;
 }
 
 .sidebar-links {
-  margin: 5px 20px 20px 20px;
+  margin: 25px 20px 20px 20px;
   text-align: center;
   border-bottom: 5px solid #3984e2;
   padding-bottom: 6px;

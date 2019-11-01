@@ -3,9 +3,9 @@ defmodule GabblerWeb.Live.Room.New do
   The Room Creation LiveView form
   """
   use Phoenix.LiveView
+  import Gabbler, only: [query: 1]
 
   alias GabblerData.{Room, Post, User, PostMeta}
-  alias GabblerData.Query.Room, as: QueryRoom
 
 
   def render(assigns) do
@@ -49,7 +49,7 @@ defmodule GabblerWeb.Live.Room.New do
   def handle_event("update_room", _, socket), do: {:noreply, socket}
 
   def handle_event("submit", _, %{assigns: %{changeset: changeset, room: room, mode: :create}} = socket) do
-    case QueryRoom.create(changeset) do
+    case query(:room).create(changeset) do
       {:ok, room} ->
         {:noreply, assign(socket, room: room, changeset: Room.changeset(room), mode: :update, updated: true)}
       {:error, changeset} ->
@@ -58,7 +58,7 @@ defmodule GabblerWeb.Live.Room.New do
   end
 
   def handle_event("submit", _, %{assigns: %{changeset: changeset, mode: :update}} = socket) do
-    case QueryRoom.update(changeset) do
+    case query(:room).update(changeset) do
       {:ok, room} ->
         {:noreply, assign(socket, room: room, mode: :update, updated: true)}
       {:error, changeset} ->
@@ -69,7 +69,7 @@ defmodule GabblerWeb.Live.Room.New do
   # PRIV
   #############################
   defp init(%{"room" => name}, socket) do
-    case QueryRoom.get(name) do
+    case query(:room).get(name) do
       nil ->
         assign(socket, default_assigns())
       room ->
@@ -112,7 +112,7 @@ defmodule GabblerWeb.Live.Room.New do
 
   defp default_assigns() do
     [
-      changeset: Room.changeset(%Room{type: "public", age: 0, user_id_creator: 1, reputation: Application.get_env(:gabbler, :default_room_reputation, 0)}),
+      changeset: Room.changeset(default_room()),
       room: %Room{type: "public", age: 0}, 
       status: nil, 
       room_type: "room",
@@ -124,4 +124,10 @@ defmodule GabblerWeb.Live.Room.New do
       users: %{1 => User.mock_data(), 2 => User.mock_data(), 3 => User.mock_data()}
     ]
   end
+
+  defp default_room(), do: %Room{
+      type: "public", 
+      age: 0, 
+      user_id_creator: 1, 
+      reputation: Application.get_env(:gabbler, :default_room_reputation, 0)}
 end

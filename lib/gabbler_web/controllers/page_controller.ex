@@ -19,4 +19,8 @@ defmodule GabblerWeb.PageController do
   def tag_tracker(%{assigns: %{user: user}} = conn, _params) do
     live_render(conn, GabblerWeb.Live.TagTracker.Index, session: %{user: user})
   end
+
+  def about(conn, _params) do
+    render(conn, "about.html")
+  end
 end

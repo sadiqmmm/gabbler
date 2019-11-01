@@ -4,11 +4,11 @@ defmodule GabblerWeb.Live.TagTracker.Index do
   """
   use GabblerWeb.Live.Voting
   use Phoenix.LiveView
+  import Gabbler, only: [query: 1]
   import GabblerWeb.Gettext
 
   alias Gabbler.TagTracker
   alias GabblerData.User
-  alias GabblerData.Query.Post, as: QueryPost
 
 
   def render(assigns) do
@@ -20,9 +20,9 @@ defmodule GabblerWeb.Live.TagTracker.Index do
   def handle_info(%{event: "tag_list", payload: %{list: posts}}, %{assigns: %{posts: curr_posts} = assigns} = socket) do
     {:noreply, assign(socket, 
       posts: Enum.uniq(posts ++ curr_posts),
-      post_metas: Map.merge(QueryPost.map_meta(posts), assigns.post_metas),
-      users: Map.merge(QueryPost.map_users(posts), assigns.users),
-      rooms: Map.merge(QueryPost.map_rooms(posts), assigns.rooms))}
+      post_metas: Map.merge(query(:post).map_meta(posts), assigns.post_metas),
+      users: Map.merge(query(:post).map_users(posts), assigns.users),
+      rooms: Map.merge(query(:post).map_rooms(posts), assigns.rooms))}
   end
 
   def handle_event("submit", %{"tag" => %{"tracker" => tag}}, %{assigns: %{tag_channel: channel}} = socket) do
@@ -63,7 +63,7 @@ defmodule GabblerWeb.Live.TagTracker.Index do
   defp map_to_posts([], acc), do: acc
 
   defp map_to_posts([{_, post_id}|t], acc) do
-    case QueryPost.get(post_id) do
+    case query(:post).get(post_id) do
       nil  -> map_to_posts(t, acc)
       post -> map_to_posts(t, [post|acc])
     end

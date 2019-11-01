@@ -4,5 +4,5 @@ defmodule Gabbler.User.ActivityModel do
   Activity represents a rolling list of recent activity of interest to a user.
   """
   @derive [Jason.Encoder]
-  defstruct user: nil, posts: [], votes: [], subs: [], moderating: [], activity: [], read_receipt: true
+  defstruct user: nil, posts: [], votes: [], subs: [], moderating: [], activity: [], requests: [], read_receipt: true
 end

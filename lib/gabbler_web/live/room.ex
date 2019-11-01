@@ -6,9 +6,9 @@ defmodule GabblerWeb.Live.Room do
   defmacro __using__(_) do
     quote do
       import Phoenix.LiveView
+      import Gabbler, only: [query: 1]
 
       alias GabblerWeb.Presence
-      alias GabblerData.Query.Subscription, as: QuerySubscription
 
 
       def mount(%{room: %{name: name} = room, user: user} = session, socket) do
@@ -18,13 +18,18 @@ defmodule GabblerWeb.Live.Room do
 
         user_count = Presence.list("room:#{name}") |> Enum.count()
 
+        _mods = query(:moderating).list(room, join: :user)
+        |> IO.inspect()
+
         {:ok, init(session, assign(socket,
-          subscribed: QuerySubscription.subscribed?(user, room),
+          subscribed: query(:subscription).subscribed?(user, room),
           room: room,
           room_type: "room",
           user: user,
           mod: false,
-          user_count: user_count
+          owner: query(:user).get(room.user_id_creator),
+          user_count: user_count,
+          moderators: []
         ))}
       end
 
@@ -38,7 +43,7 @@ defmodule GabblerWeb.Live.Room do
 
       @impl true
       def handle_event("subscribe", _, %{assigns: %{user: user, room: room}} = socket) do
-        case QuerySubscription.subscribe(user, room) do
+        case query(:subscription).subscribe(user, room) do
           {:ok, _} ->
             GabblerWeb.Endpoint.broadcast("user:#{user.id}", "subscribed", %{"room_name" => room.name})
 
@@ -50,7 +55,7 @@ defmodule GabblerWeb.Live.Room do
       end
 
       def handle_event("unsubscribe", _, %{assigns: %{user: user, room: room}} = socket) do
-        case QuerySubscription.unsubscribe(user, room) do
+        case query(:subscription).unsubscribe(user, room) do
           {:ok, _} ->
             GabblerWeb.Endpoint.broadcast("user:#{user.id}", "unsubscribed", %{"room_name" => room.name})
 

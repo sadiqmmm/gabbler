@@ -1,0 +1,7 @@
+<% room = get_activity_subjects(@posts, @rooms, @id, "reply") %>
+
+<div class="new-activity">
+  Request to Mod /r/<%= @rooms[@id].name %> 
+  <a href="#" phx-click="decline-mod" phx-value-id="<%= @id %>">No thanks</a>
+  <a href="#" phx-click="accept-mod" phx-value-id="<%= @id %>">I choose to Mod</a>
+</div>

@@ -8,6 +8,7 @@ defmodule Gabbler.User do
   alias Gabbler.User.Application, as: UserApp
   alias GabblerData.Query.Subscription, as: QuerySubscription
   alias GabblerData.Query.Moderating, as: QueryModerating
+  alias GabblerData.Query.User, as: QueryUser
 
   # TODO: use conf
   @max_moderating 5 # Max in activity server
@@ -50,14 +51,23 @@ defmodule Gabbler.User do
     call(user, :activity_moderating, room_name)
   end
 
-
-
   @doc """
   Add a simple activity to a fixed length FILO queue. Should expect the value to be displayed
   organized by the id key
   """
   def add_activity(user, id, value) do
     call(user, :add_activity, {id, value})
+  end
+
+  @doc """
+  Update the read receipt status, indicating there are unread notices
+  """
+  def update_read_receipt(user, true) do
+    cast(user, :update_read_receipt, true)
+  end
+
+  def update_read_receipt(user, false) do
+    cast(user, :update_read_receipt, false)
   end
 
   @doc """
@@ -113,8 +123,30 @@ defmodule Gabbler.User do
 
   defp call(nil, _, _), do: nil
 
-  defp call(%User{} = user, action, args) when is_atom(action) do
-    pid = case :syn.find_by_key(server_name(user)) do
+  defp call(user_id, action, args) when is_integer(user_id) do
+    call(QueryUser.get(user_id), action, args)
+  end
+
+  defp call(%User{} = user, action, args) do
+    pid = get_user_server_pid(user)
+
+    case args do
+      [] -> GenServer.call(pid, action)
+      _  -> GenServer.call(pid, {action, args})
+    end
+  end
+
+  defp cast(%User{} = user, action, args) do
+    pid = get_user_server_pid(user)
+
+    case args do
+      [] -> GenServer.cast(pid, action)
+      _  -> GenServer.cast(pid, {action, args})
+    end
+  end
+
+  defp get_user_server_pid(user) do
+    case :syn.find_by_key(server_name(user)) do
       :undefined ->
         subs = Enum.reduce(QuerySubscription.list(user, join: :room, limit: @max_subscriptions), [], 
           fn {_, %{name: name}}, acc -> [name|acc] end)
@@ -127,11 +159,6 @@ defmodule Gabbler.User do
         end
       pid ->
         pid
-    end
-
-    case args do
-      [] -> GenServer.call(pid, action)
-      _  -> GenServer.call(pid, {action, args})
     end
   end
 end

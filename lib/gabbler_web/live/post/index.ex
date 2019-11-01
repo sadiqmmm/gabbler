@@ -6,12 +6,11 @@ defmodule GabblerWeb.Live.Post.Index do
   use GabblerWeb.Live.Voting
   use Phoenix.LiveView
   import GabblerWeb.Live.UtilSocket, only: [update_assign: 5]
+  import Gabbler, only: [query: 1]
 
   alias Gabbler.PostCreation
   alias GabblerWeb.Presence
   alias GabblerData.{User, Post, PostMeta, Comment, Room}
-  alias GabblerData.Query.Post, as: QueryPost
-  alias GabblerData.Query.User, as: QueryUser
 
 
   def render(assigns) do
@@ -37,7 +36,7 @@ defmodule GabblerWeb.Live.Post.Index do
   end
 
   def handle_event("reply_comment", %{"to" => parent_hash}, socket) do
-    %{id: post_id} = QueryPost.get(parent_hash)
+    %{id: post_id} = query(:post).get(parent_hash)
 
     socket = update_assign(:changeset_reply, :reply, :parent_id, post_id, socket)
 
@@ -59,9 +58,13 @@ defmodule GabblerWeb.Live.Post.Index do
   def handle_event("reply_submit", _, %{assigns: %{
     user: user, op: %{hash: op_hash} = op, room: room, changeset_reply: changeset, comments: comments}} = socket) do
 
-    case QueryPost.create_reply(PostCreation.prepare_changeset(room, changeset)) do
+    case query(:post).create_reply(PostCreation.prepare_changeset(room, changeset)) do
       {:ok, comment} ->
         GabblerWeb.Endpoint.broadcast("post_live:#{op_hash}", "new_reply", %{:post => comment})
+
+        post = query(:post).get(comment.parent_id)
+        
+        _ = Gabbler.User.add_activity(post.user_id_post, post.id, "reply")
 
         {:noreply, assign(socket, 
           changeset_reply: default_reply_changeset(user, room, op), 
@@ -85,9 +88,9 @@ defmodule GabblerWeb.Live.Post.Index do
   end
 
   defp init(%{room: room, user: user, post: post, mode: mode, op: op, focus_hash: focus_hash}, socket) do
-    post_user = QueryUser.get(post.user_id_post)
+    post_user = query(:user).get(post.user_id_post)
 
-    comments = QueryPost.thread(post, mode)
+    comments = query(:post).thread(post, mode)
 
     assign(socket,
       post: post,

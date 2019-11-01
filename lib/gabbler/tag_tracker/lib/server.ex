@@ -48,17 +48,20 @@ defmodule Gabbler.TagTracker.Server do
 
   @impl true
   def handle_cast({:get, {tag, client_channel}}, %{tags: tags} = state) do
-    {_, _, posts} = Map.get(tags, tag)
+    case Map.get(tags, tag) do
+      nil ->
+        {:noreply, state}
+      {_, _, posts} ->
+        broadcast_to_client(posts, client_channel)
 
-    broadcast_to_client(posts, client_channel)
-
-    {:noreply, state}
+        {:noreply, state}
+    end
   end
 
   @impl true
   def handle_cast({:add, {tag, post}}, %TagState{tags: tags, queue: queue} = state) do
     post = format_post(post)
-    
+
     case Map.get(tags, tag) do
       nil -> 
         tags = Map.put(tags, tag, {1, [{1, DateTime.to_unix(DateTime.utc_now())}], [post]})

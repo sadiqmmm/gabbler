@@ -12,12 +12,14 @@ defmodule Gabbler.User.Server do
   @max_subscriptions 7 # Max in activity server
   @max_moderating 5 # Max in activity server
   @max_activity 10 # Max new activity shown at once
+  @server_timeout 1000 * 60 * 60 * 48 # Server deletes after 48 hours inactivity
 
 
   def start_link({%User{} = user, subs, moderating}) do
     GenServer.start_link(__MODULE__, 
       %ActivityModel{user: user, subs: subs, moderating: moderating}, 
-      name: Gabbler.User.server_name(user))
+      name: Gabbler.User.server_name(user),
+      timeout: @server_timeout)
   end
 
   @impl true
@@ -47,7 +49,7 @@ defmodule Gabbler.User.Server do
     posts = state.posts
 
     case can_post?(state) do
-      true -> 
+      true ->
         posts = [{hash, DateTime.utc_now()}|state.posts]
         {:reply, posts, %{state | posts: posts}}
       false -> 
@@ -83,7 +85,9 @@ defmodule Gabbler.User.Server do
   end
 
   @impl true
-  def handle_call({:add_activity, {id, value}}, _from, %ActivityModel{activity: activity} = state) do
+  def handle_call({:add_activity, {id, value}}, _from, %ActivityModel{user: %{id: user_id}, activity: activity} = state) do
+    GabblerWeb.Endpoint.broadcast("user:#{user_id}", value, %{id: id})
+
     {:reply, true, %{state | activity: [{id, value}|Enum.take(activity, @max_activity - 1)], read_receipt: false}}
   end
 
@@ -119,6 +123,11 @@ defmodule Gabbler.User.Server do
   @impl true
   def handle_call(:get_activity, _from, %ActivityModel{activity: activity} = state) do
     {:reply, activity, state}
+  end
+
+  @impl true
+  def handle_cast({:update_read_receipt, status}, state) do
+    {:reply, %{state | read_receipt: status}}
   end
 
   @impl true

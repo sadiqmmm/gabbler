@@ -12,3 +12,20 @@ msgstr ""
 #: lib/gabbler_web/templates/post/create.html.leex:5
 msgid "Something went wrong in Post. Errors are listed below."
 msgstr ""
+
+#, elixir-format
+#: lib/gabbler/post/creation.ex:19
+msgid "post not created. You may have reached a daily posting limit."
+msgstr ""
+
+#, elixir-format
+#: lib/gabbler_web/live/post/index.ex:6 lib/gabbler_web/live/room/index.ex:6
+#: lib/gabbler_web/live/tag_tracker/index.ex:5
+msgid "there was an issue voting"
+msgstr ""
+
+#, elixir-format
+#: lib/gabbler_web/live/post/index.ex:6 lib/gabbler_web/live/room/index.ex:6
+#: lib/gabbler_web/live/tag_tracker/index.ex:5
+msgid "you have reached your voting capacity for today or already voted here"
+msgstr ""

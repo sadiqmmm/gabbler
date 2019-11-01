@@ -8,8 +8,8 @@ defmodule GabblerWeb.Live.Voting do
   defmacro __using__(_) do
     quote do
       import Phoenix.LiveView
+      import Gabbler, only: [query: 1]
       import GabblerWeb.Gettext
-      alias GabblerData.Query.Post, as: QueryPost
 
       # Post is set, voting on Post page on OP
       def handle_event("vote",
@@ -102,7 +102,7 @@ defmodule GabblerWeb.Live.Voting do
 
       defp vote(user, %{hash: hash} = post, amt) do
         if Gabbler.User.can_vote?(user, hash) do
-          case QueryPost.increment_score(post, amt, nil) do
+          case query(:post).increment_score(post, amt, nil) do
             {1, nil} -> 
               Gabbler.User.activity_voted(user, hash)
 

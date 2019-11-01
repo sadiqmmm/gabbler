@@ -11,27 +11,22 @@ msgid ""
 msgstr ""
 
 #, elixir-format
-#: lib/gabbler_web/templates/room/create.html.leex:18
+#: lib/gabbler_web/templates/room/create.html.leex:20
 msgid "This name is used for your unique room url. Use letters only and no spaces or special characters."
 msgstr ""
 
 #, elixir-format
-#: lib/gabbler_web/templates/room/create.html.leex:32
-msgid "A description of up to 500 characters."
-msgstr ""
-
-#, elixir-format
-#: lib/gabbler_web/templates/room/create.html.leex:44
+#: lib/gabbler_web/templates/room/create.html.leex:48
 msgid "Public: everyone can see it and subscribe. Restricted: everyone can see but only authorized can post. Private: Nobody can see unless authorized to. Admins can view all to monitor site policy."
 msgstr ""
 
 #, elixir-format
-#: lib/gabbler_web/templates/room/create.html.leex:50
+#: lib/gabbler_web/templates/room/create.html.leex:54
 msgid "The minimum age. 0/Blank means any."
 msgstr ""
 
 #, elixir-format
-#: lib/gabbler_web/templates/room/create.html.leex:25
+#: lib/gabbler_web/templates/room/create.html.leex:29
 msgid "A longer (250 character max) title that displays prominently. Use HTML IMG w/link for image banner."
 msgstr ""
 
@@ -67,26 +62,56 @@ msgid "(optional) user letters, numbers and spaces in a comma separated list of 
 msgstr ""
 
 #, elixir-format
-#: lib/gabbler_web/templates/user/login.html.leex:44
+#: lib/gabbler_web/templates/user/login.html.leex:50
 msgid "Confirm your password"
 msgstr ""
 
 #, elixir-format
-#: lib/gabbler_web/templates/user/login.html.leex:36
+#: lib/gabbler_web/templates/user/login.html.leex:42
 msgid "Must be at least 9 characters"
 msgstr ""
 
 #, elixir-format
-#: lib/gabbler_web/templates/user/login.html.leex:9
+#: lib/gabbler_web/templates/user/login.html.leex:14
 msgid "Some actions require an account. Login or create one here."
 msgstr ""
 
 #, elixir-format
-#: lib/gabbler_web/templates/user/login.html.leex:17
+#: lib/gabbler_web/templates/user/login.html.leex:23
 msgid "This is your unique handle used across the site"
 msgstr ""
 
 #, elixir-format
-#: lib/gabbler_web/templates/user/login.html.leex:27
+#: lib/gabbler_web/templates/user/login.html.leex:33
 msgid "Your email can optionally be used for subscriptions and login"
+msgstr ""
+
+#, elixir-format
+#: lib/gabbler_web/templates/room/create.html.leex:37
+msgid "A text description of up to 500 characters."
+msgstr ""
+
+#, elixir-format
+#: lib/gabbler_web/templates/page/tag_tracker.html.leex:10
+msgid "Track Tag"
+msgstr ""
+
+#, elixir-format
+#: lib/gabbler_web/controllers/user_controller.ex:57
+msgid "You are logged in!"
+msgstr ""
+
+#, elixir-format
+#: lib/gabbler_web/templates/page/about.html.eex:1
+msgid "about"
+msgstr ""
+
+#, elixir-format
+#: lib/gabbler_web/live/tag_tracker/index.ex:52
+msgid "all trending"
+msgstr ""
+
+#, elixir-format
+#: lib/gabbler_web/templates/page/tag_tracker.html.leex:8
+msgid "tag to track"
 msgstr ""

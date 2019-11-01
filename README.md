@@ -14,3 +14,7 @@ More information coming as things progress
 ## TEMP
 
 https://github.com/phoenixframework/phoenix_live_view/issues/111
+
+https://github.com/chrismccord/phoenix_live_view_example/tree/master/lib/demo_web/live
+
+PALETTE: http://paletton.com/#uid=33B0u0kpQteg1DDl5vstnoow5jn

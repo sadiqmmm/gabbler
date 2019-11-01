@@ -12,65 +12,107 @@ msgstr ""
 "Plural-Forms: nplurals=2\n"
 
 #, elixir-format
+#: lib/gabbler_web/templates/room/create.html.leex:20
 msgid "This name is used for your unique room url. Use letters only and no spaces or special characters."
 msgstr ""
 
 #, elixir-format
-msgid "A description of up to 500 characters."
-msgstr ""
-
-#, elixir-format
+#: lib/gabbler_web/templates/room/create.html.leex:48
 msgid "Public: everyone can see it and subscribe. Restricted: everyone can see but only authorized can post. Private: Nobody can see unless authorized to. Admins can view all to monitor site policy."
 msgstr ""
 
 #, elixir-format
+#: lib/gabbler_web/templates/room/create.html.leex:54
 msgid "The minimum age. 0/Blank means any."
 msgstr ""
 
 #, elixir-format
+#: lib/gabbler_web/templates/room/create.html.leex:29
 msgid "A longer (250 character max) title that displays prominently. Use HTML IMG w/link for image banner."
 msgstr ""
 
 #, elixir-format
+#: lib/gabbler_web/templates/post/create.html.leex:17
+#: lib/gabbler_web/templates/room/create.html.leex:11
 msgid "Successful update"
 msgstr ""
 
 #, elixir-format
+#: lib/gabbler_web/templates/post/create.html.leex:33
 msgid "alphanumeric and .,?!:;-\" allowed as well as markdown"
 msgstr ""
 
 #, elixir-format
+#: lib/gabbler_web/templates/post/create.html.leex:24
 msgid "please use letters, numbers and -.,?!:)(#][+$"
 msgstr ""
 
 #, elixir-format
+#: lib/gabbler_web/templates/post/create.html.leex:41
 msgid "(optional) appropriate link to other content"
 msgstr ""
 
-#, elixir-format, fuzzy
+#, elixir-format
+#: lib/gabbler_web/templates/post/create.html.leex:50
 msgid "(optional) images will be resized and thumbed automatically"
 msgstr ""
 
-#, elixir-format, fuzzy
+#, elixir-format
+#: lib/gabbler_web/templates/post/create.html.leex:59
 msgid "(optional) user letters, numbers and spaces in a comma separated list of up to 4 tags that help with search"
 msgstr ""
 
 #, elixir-format
+#: lib/gabbler_web/templates/user/login.html.leex:50
 msgid "Confirm your password"
 msgstr ""
 
 #, elixir-format
+#: lib/gabbler_web/templates/user/login.html.leex:42
 msgid "Must be at least 9 characters"
 msgstr ""
 
 #, elixir-format
+#: lib/gabbler_web/templates/user/login.html.leex:14
 msgid "Some actions require an account. Login or create one here."
 msgstr ""
 
 #, elixir-format
+#: lib/gabbler_web/templates/user/login.html.leex:23
 msgid "This is your unique handle used across the site"
 msgstr ""
 
 #, elixir-format
+#: lib/gabbler_web/templates/user/login.html.leex:33
 msgid "Your email can optionally be used for subscriptions and login"
+msgstr ""
+
+#, elixir-format
+#: lib/gabbler_web/templates/room/create.html.leex:37
+msgid "A text description of up to 500 characters."
+msgstr ""
+
+#, elixir-format
+#: lib/gabbler_web/templates/page/tag_tracker.html.leex:10
+msgid "Track Tag"
+msgstr ""
+
+#, elixir-format
+#: lib/gabbler_web/controllers/user_controller.ex:57
+msgid "You are logged in!"
+msgstr ""
+
+#, elixir-format
+#: lib/gabbler_web/templates/page/about.html.eex:1
+msgid "about"
+msgstr "Welcome to Smiley's Pub! There aren't any actual smileys here, probably, yet. This is a demo site so the rules are simple; keep the content legal and porn free or it's a banning. Have fun and give your feedback at /r/gabbler_feedback. Signing up is simple and requires only that you select a user name. As a demo site there is no guarantee yet that data will be permenent. But resets will try to be avoided certainly."
+
+#, elixir-format
+#: lib/gabbler_web/live/tag_tracker/index.ex:52
+msgid "all trending"
+msgstr ""
+
+#, elixir-format
+#: lib/gabbler_web/templates/page/tag_tracker.html.leex:8
+msgid "tag to track"
 msgstr ""

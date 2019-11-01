@@ -3,10 +3,10 @@ defmodule GabblerWeb.Live.Post.New do
   The Room Creation LiveView form
   """
   use Phoenix.LiveView
+  import Gabbler, only: [query: 1]
 
   alias Gabbler.PostCreation
   alias GabblerData.{Post, PostMeta}
-  alias GabblerData.Query.Post, as: QueryPost
 
 
   def render(assigns) do
@@ -60,6 +60,7 @@ defmodule GabblerWeb.Live.Post.New do
         _ = Gabbler.TagTracker.add_tags(post, meta)
 
         GabblerWeb.Endpoint.broadcast("room_live:#{room_name}", "new_post", %{:post => post, :meta => meta})
+        GabblerWeb.Endpoint.broadcast("user:#{user.id}", "new_post", %{:post => post, :meta => meta})
 
         {:noreply, assign(socket, 
           post: post,
@@ -82,14 +83,14 @@ defmodule GabblerWeb.Live.Post.New do
   def handle_event("submit", _, %{assigns: %{
     mode: :update, changeset: changeset, changeset_meta: changeset_meta, updated: updated
   }} = socket) do
-    update_set = case QueryPost.update(changeset) do
+    update_set = case query(:post).update(changeset) do
       {:ok, post} ->
         [post: post, changeset: Post.changeset(post), mode: :update, updated: true]
       {:error, changeset} ->
         [changeset: changeset]
     end
 
-    update_meta_set = case QueryPost.update_meta(changeset_meta) do
+    update_meta_set = case query(:post).update_meta(changeset_meta) do
       {:ok, post_meta} ->
         [post_meta: post_meta, changeset_meta: PostMeta.changeset(post_meta), updated: true, updated: update_updated(updated)]
       {:error, changeset} ->
