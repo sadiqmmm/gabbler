@@ -7,7 +7,7 @@ defmodule Gabbler.Application do
 
   def start(_type, _args) do
     import Supervisor.Spec, warn: false
-    
+
     # Initialize syn, the global process registry
     :syn.start()
     :syn.init()
@@ -21,7 +21,7 @@ defmodule Gabbler.Application do
       worker(Gabbler.Scheduler, [])
     ]
 
-    Supervisor.start_link(children, [strategy: :one_for_one, name: Gabbler.Supervisor])
+    Supervisor.start_link(children, strategy: :one_for_one, name: Gabbler.Supervisor)
   end
 
   # Tell Phoenix to update the endpoint configuration

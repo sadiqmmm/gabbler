@@ -8,7 +8,7 @@ defmodule Gabbler.TagTracker.TagState do
     - Votes are added in small queues periodically by a timed process
     - Holds the total score and score stack for each tag as well
     - Score stack tracks and ejects latest vote totals
-  
+
   Queue: 
     - Tracks the active tags as the most recent unique tags added (check Map to see if added)
     - As queue is ejected per size constraints, ejects entries from Posts map

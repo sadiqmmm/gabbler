@@ -7,7 +7,6 @@ defmodule GabblerWeb.Live.Room.Index do
   use Phoenix.LiveView
   import Gabbler, only: [query: 1]
 
-
   def render(assigns) do
     ~L"""
       <%= Phoenix.View.render(GabblerWeb.RoomView, "index.html", assigns) %>
@@ -16,8 +15,11 @@ defmodule GabblerWeb.Live.Room.Index do
     """
   end
 
-  def handle_info(%{event: "new_post", payload: %{post: post, meta: meta}}, %{assigns: %{posts: posts, post_metas: metas}} = socket) do
-    {:noreply, assign(socket, posts: [post|posts], post_metas: Map.put(metas, post.id, meta))}
+  def handle_info(
+        %{event: "new_post", payload: %{post: post, meta: meta}},
+        %{assigns: %{posts: posts, post_metas: metas}} = socket
+      ) do
+    {:noreply, assign(socket, posts: [post | posts], post_metas: Map.put(metas, post.id, meta))}
   end
 
   # PRIV
@@ -32,7 +34,8 @@ defmodule GabblerWeb.Live.Room.Index do
     )
   end
 
-  defp init(%{posts: _, room: _} = session, socket), do: init(Map.put(session, :mode, :hot), socket)
+  defp init(%{posts: _, room: _} = session, socket),
+    do: init(Map.put(session, :mode, :hot), socket)
 
   defp init(%{room: %{id: id}, mode: :new} = session, socket) do
     posts = query(:post).list(by_room: id, order_by: :inserted_at, limit: 20)

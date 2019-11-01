@@ -7,18 +7,21 @@ defmodule GabblerWeb.Live.UtilSocket do
 
   alias GabblerData.{Room, Post, PostMeta, Comment, User}
 
-
   def update_assign(changeset_name, type, key, value, %{assigns: assigns} = socket) do
-    changeset      = Map.get(assigns, changeset_name)
-    value_update   = Map.get(assigns, type)
+    changeset = Map.get(assigns, changeset_name)
+    value_update = Map.get(assigns, type)
     updated_struct = Map.put(value_update, key, value)
 
-    assign(socket, [{type, updated_struct}, {changeset_name, update_changeset(changeset, type, key, value)}])
+    assign(socket, [
+      {type, updated_struct},
+      {changeset_name, update_changeset(changeset, type, key, value)}
+    ])
   end
 
   def update_changeset(changeset, type, key, value) do
-    changeset = %{changeset | :errors => Keyword.delete(changeset.errors, key)}
-    |> changeset_model(type).changeset(%{key => value})
+    changeset =
+      %{changeset | :errors => Keyword.delete(changeset.errors, key)}
+      |> changeset_model(type).changeset(%{key => value})
 
     case changeset do
       %{:errors => []} -> %{changeset | :valid? => true}

@@ -9,7 +9,6 @@ defmodule Gabbler.TagTracker do
   alias Gabbler.Post.Meta
   alias GabblerData.{Post, PostMeta, User}
 
-
   @doc """
   Add a new tag or set of tags from a new post
   """
@@ -65,12 +64,13 @@ defmodule Gabbler.TagTracker do
 
   defp cast(action, args) when is_atom(action) do
     case :syn.find_by_key(server_name()) do
-      :undefined -> 
+      :undefined ->
         nil
-      pid -> 
+
+      pid ->
         case args do
           [] -> GenServer.cast(pid, action)
-          _  -> GenServer.cast(pid, {action, args})
+          _ -> GenServer.cast(pid, {action, args})
         end
     end
   end

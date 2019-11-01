@@ -35,12 +35,12 @@ defmodule GabblerWeb.Router do
     get "/room/new", RoomController, :new
 
     # ROOM -> ROOM MANAGEMENT
-    #get "/room/:roomname/manage", RoomManageController, :manage
-    #get "/room/:roomname/manage/mods", RoomManageController, :manage_mods
-    #post "/room/:roomname/new", RoomManageController, :allowuser
-    #post "/room/:roomname/manage/mods/new", RoomManageController, :addmod
-    #get "/room/:roomname/removeuser/:username", RoomManageController, :removeuser
-    #get "/room/:roomname/removemod/:username", RoomManageController, :removemod
+    # get "/room/:roomname/manage", RoomManageController, :manage
+    # get "/room/:roomname/manage/mods", RoomManageController, :manage_mods
+    # post "/room/:roomname/new", RoomManageController, :allowuser
+    # post "/room/:roomname/manage/mods/new", RoomManageController, :addmod
+    # get "/room/:roomname/removeuser/:username", RoomManageController, :removeuser
+    # get "/room/:roomname/removemod/:username", RoomManageController, :removemod
 
     # ROOM -> POST
     get "/r/:room/new_post", PostController, :new

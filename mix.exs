@@ -39,12 +39,9 @@ defmodule Gabbler.MixProject do
       {:gettext, "~> 0.17"},
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
-
       {:distillery, "~> 2.1"},
       {:edeliver, "~> 1.7"},
-
       {:timex, "~> 3.6", override: true},
-      
       {:phoenix_live_view, "~> 0.2.0"},
       {:guardian, "~> 1.2"},
       {:comeonin, "~> 5.1"},
@@ -59,8 +56,8 @@ defmodule Gabbler.MixProject do
       {:earmark, "~> 1.4"},
       {:simplestatex, "~> 0.3.0"},
       {:quantum, "~> 2.3"},
-      {:httpotion, "~> 3.1.0"}|
-      env_deps(Mix.env())
+      {:httpotion, "~> 3.1.0"}
+      | env_deps(Mix.env())
     ]
   end
 

@@ -6,7 +6,6 @@ defmodule Gabbler.Plug.UserSession do
 
   alias Gabbler.Auth.Guardian
 
-
   def init(_), do: :ok
 
   def call(conn, _default) do
@@ -18,7 +17,8 @@ defmodule Gabbler.Plug.UserSession do
 
         assign(conn, :user, nil)
         |> assign(:temp_token, token)
-      user -> 
+
+      user ->
         assign(conn, :user, user)
     end
   end

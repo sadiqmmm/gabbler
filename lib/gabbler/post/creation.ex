@@ -7,7 +7,6 @@ defmodule Gabbler.PostCreation do
   alias GabblerData.Room
   alias GabblerData.Query.Post, as: QueryPost
 
-
   @doc """
   Handle post creation steps and reactions
   """
@@ -15,8 +14,10 @@ defmodule Gabbler.PostCreation do
     case Gabbler.User.can_post?(user) do
       true ->
         QueryPost.create(prepare_changeset(room, changeset), changeset_meta)
+
       false ->
-        {:error, dgettext("errors", "post not created. You may have reached a daily posting limit.")}
+        {:error,
+         dgettext("errors", "post not created. You may have reached a daily posting limit.")}
     end
   end
 
@@ -38,7 +39,7 @@ defmodule Gabbler.PostCreation do
   def get_hash(title, %Room{id: room_id}) do
     {_, _, micro} = :os.timestamp()
 
-    Hashids.new([salt: title, min_len: 12])
+    Hashids.new(salt: title, min_len: 12)
     |> Hashids.encode([micro, room_id])
   end
 

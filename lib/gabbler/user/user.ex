@@ -11,9 +11,10 @@ defmodule Gabbler.User do
   alias GabblerData.Query.User, as: QueryUser
 
   # TODO: use conf
-  @max_moderating 5 # Max in activity server
-  @max_subscriptions 7 # Max in activity server
-
+  # Max in activity server
+  @max_moderating 5
+  # Max in activity server
+  @max_subscriptions 7
 
   def all(user) do
     call(user, :retrieve_all)
@@ -132,7 +133,7 @@ defmodule Gabbler.User do
 
     case args do
       [] -> GenServer.call(pid, action)
-      _  -> GenServer.call(pid, {action, args})
+      _ -> GenServer.call(pid, {action, args})
     end
   end
 
@@ -141,22 +142,35 @@ defmodule Gabbler.User do
 
     case args do
       [] -> GenServer.cast(pid, action)
-      _  -> GenServer.cast(pid, {action, args})
+      _ -> GenServer.cast(pid, {action, args})
     end
   end
 
   defp get_user_server_pid(user) do
     case :syn.find_by_key(server_name(user)) do
       :undefined ->
-        subs = Enum.reduce(QuerySubscription.list(user, join: :room, limit: @max_subscriptions), [], 
-          fn {_, %{name: name}}, acc -> [name|acc] end)
-        moderating = Enum.reduce(QueryModerating.list(user, join: :room, limit: @max_moderating), [],
-          fn {_, %{name: name}}, acc -> [name|acc] end)
+        subs =
+          Enum.reduce(
+            QuerySubscription.list(user, join: :room, limit: @max_subscriptions),
+            [],
+            fn {_, %{name: name}}, acc -> [name | acc] end
+          )
+
+        moderating =
+          Enum.reduce(QueryModerating.list(user, join: :room, limit: @max_moderating), [], fn {_,
+                                                                                               %{
+                                                                                                 name:
+                                                                                                   name
+                                                                                               }},
+                                                                                              acc ->
+            [name | acc]
+          end)
 
         case UserApp.add_child(user, subs, moderating) do
           {:error, {:already_started, pid}} -> pid
           {:ok, pid} -> pid
         end
+
       pid ->
         pid
     end

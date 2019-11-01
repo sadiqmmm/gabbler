@@ -5,28 +5,34 @@ defmodule Gabbler.User.Server do
   alias GabblerData.User
 
   # TODO: lets have these in config
-  @vote_limit_expirey 24 # Hours
+  # Hours
+  @vote_limit_expirey 24
   @max_votes 10
-  @post_limit_expirey 1 # Hours
+  # Hours
+  @post_limit_expirey 1
   @max_posts 3
-  @max_subscriptions 7 # Max in activity server
-  @max_moderating 5 # Max in activity server
-  @max_activity 10 # Max new activity shown at once
-  @server_timeout 1000 * 60 * 60 * 48 # Server deletes after 48 hours inactivity
-
+  # Max in activity server
+  @max_subscriptions 7
+  # Max in activity server
+  @max_moderating 5
+  # Max new activity shown at once
+  @max_activity 10
+  # Server deletes after 48 hours inactivity
+  @server_timeout 1000 * 60 * 60 * 48
 
   def start_link({%User{} = user, subs, moderating}) do
-    GenServer.start_link(__MODULE__, 
-      %ActivityModel{user: user, subs: subs, moderating: moderating}, 
+    GenServer.start_link(
+      __MODULE__,
+      %ActivityModel{user: user, subs: subs, moderating: moderating},
       name: Gabbler.User.server_name(user),
-      timeout: @server_timeout)
+      timeout: @server_timeout
+    )
   end
 
   @impl true
   def init(user_info) do
     {:ok, user_info}
   end
-
 
   @impl true
   def handle_call(:retrieve_all, _from, %ActivityModel{} = state) do
@@ -38,7 +44,7 @@ defmodule Gabbler.User.Server do
     state = prune_state(state)
 
     case can_vote?(state, hash) do
-      true -> {:reply, true, %{state | votes: [{hash, DateTime.utc_now()}|state.votes]}}
+      true -> {:reply, true, %{state | votes: [{hash, DateTime.utc_now()} | state.votes]}}
       false -> {:reply, false, state}
     end
   end
@@ -50,17 +56,22 @@ defmodule Gabbler.User.Server do
 
     case can_post?(state) do
       true ->
-        posts = [{hash, DateTime.utc_now()}|state.posts]
+        posts = [{hash, DateTime.utc_now()} | state.posts]
         {:reply, posts, %{state | posts: posts}}
-      false -> 
+
+      false ->
         {:reply, posts, state}
     end
   end
 
   @impl true
-  def handle_call({:activity_subscribed, room_name}, _from, %ActivityModel{subs: subscriptions} = state) do
+  def handle_call(
+        {:activity_subscribed, room_name},
+        _from,
+        %ActivityModel{subs: subscriptions} = state
+      ) do
     if Enum.count(subscriptions) < @max_subscriptions do
-      subscriptions = [room_name|Enum.filter(subscriptions, fn sub -> sub != room_name end)]
+      subscriptions = [room_name | Enum.filter(subscriptions, fn sub -> sub != room_name end)]
 
       {:reply, subscriptions, %{state | subs: subscriptions}}
     else
@@ -69,32 +80,55 @@ defmodule Gabbler.User.Server do
   end
 
   @impl true
-  def handle_call({:activity_unsubscribed, room_name}, _from, %ActivityModel{subs: subscriptions} = state) do
+  def handle_call(
+        {:activity_unsubscribed, room_name},
+        _from,
+        %ActivityModel{subs: subscriptions} = state
+      ) do
     subscriptions = Enum.filter(subscriptions, fn sub -> sub != room_name end)
 
     {:reply, subscriptions, %{state | subs: subscriptions}}
   end
 
   @impl true
-  def handle_call({:activity_moderating, room_name}, _from, %ActivityModel{moderating: moderating} = state) do
+  def handle_call(
+        {:activity_moderating, room_name},
+        _from,
+        %ActivityModel{moderating: moderating} = state
+      ) do
     case can_moderate?(state) do
-      true -> {:reply, true, %{state | moderating: 
-        [room_name|Enum.filter(moderating, fn name -> name == room_name end)]}}
-      false -> {:reply, false, state}
+      true ->
+        {:reply, true,
+         %{
+           state
+           | moderating: [room_name | Enum.filter(moderating, fn name -> name == room_name end)]
+         }}
+
+      false ->
+        {:reply, false, state}
     end
   end
 
   @impl true
-  def handle_call({:add_activity, {id, value}}, _from, %ActivityModel{user: %{id: user_id}, activity: activity} = state) do
+  def handle_call(
+        {:add_activity, {id, value}},
+        _from,
+        %ActivityModel{user: %{id: user_id}, activity: activity} = state
+      ) do
     GabblerWeb.Endpoint.broadcast("user:#{user_id}", value, %{id: id})
 
-    {:reply, true, %{state | activity: [{id, value}|Enum.take(activity, @max_activity - 1)], read_receipt: false}}
+    {:reply, true,
+     %{
+       state
+       | activity: [{id, value} | Enum.take(activity, @max_activity - 1)],
+         read_receipt: false
+     }}
   end
 
   @impl true
   def handle_call({:can_vote, hash}, _from, %ActivityModel{} = state) do
     state = prune_state(state)
-    
+
     {:reply, can_vote?(state, hash), state}
   end
 
@@ -139,17 +173,23 @@ defmodule Gabbler.User.Server do
     curr = DateTime.utc_now()
 
     state
-    |> Map.put(:votes, Enum.filter(votes, fn {_, time} -> 
-      DateTime.diff(curr, time, :second) < (@vote_limit_expirey * 60 * 60)
-    end))
-    |> Map.put(:posts, Enum.filter(posts, fn {_, time} -> 
-      DateTime.diff(curr, time, :second) < (@post_limit_expirey * 60 * 60)
-    end))
+    |> Map.put(
+      :votes,
+      Enum.filter(votes, fn {_, time} ->
+        DateTime.diff(curr, time, :second) < @vote_limit_expirey * 60 * 60
+      end)
+    )
+    |> Map.put(
+      :posts,
+      Enum.filter(posts, fn {_, time} ->
+        DateTime.diff(curr, time, :second) < @post_limit_expirey * 60 * 60
+      end)
+    )
   end
 
   defp can_vote?(%{votes: votes}, hash) do
-    Enum.count(votes) < @max_votes
-    && Enum.count(Enum.filter(votes, fn {vote_hash, _} -> vote_hash == hash end)) < 1
+    Enum.count(votes) < @max_votes &&
+      Enum.count(Enum.filter(votes, fn {vote_hash, _} -> vote_hash == hash end)) < 1
   end
 
   defp can_post?(%{posts: posts}) do

@@ -6,7 +6,6 @@ defmodule Gabbler.Post.Meta do
 
   alias GabblerData.PostMeta
 
-
   @impl true
   def upload_image(_image_data, _tags), do: :ok
 
@@ -35,32 +34,38 @@ defmodule Gabbler.Post.Meta do
 
   defp process_tags(_meta, [], acc), do: acc
 
-  defp process_tags(%PostMeta{:link => link} = meta, ["youtube"|t], acc) do
-    url = URI.parse(link)
-    |> Map.get(:query)
-    |> URI.decode_query()
+  defp process_tags(%PostMeta{:link => link} = meta, ["youtube" | t], acc) do
+    url =
+      URI.parse(link)
+      |> Map.get(:query)
+      |> URI.decode_query()
 
-    html = Phoenix.View.render_to_string(GabblerWeb.EmbedView, "youtube.html", %{:hash => url["v"]})
+    html =
+      Phoenix.View.render_to_string(GabblerWeb.EmbedView, "youtube.html", %{:hash => url["v"]})
 
-    process_tags(meta, t, [{:html, html}|acc])
+    process_tags(meta, t, [{:html, html} | acc])
   end
 
-  defp process_tags(%PostMeta{:link => link} = meta, ["bingmap"|t], acc) do
-    url = URI.parse(link)
-    |> Map.get(:query)
-    |> URI.decode_query()
+  defp process_tags(%PostMeta{:link => link} = meta, ["bingmap" | t], acc) do
+    url =
+      URI.parse(link)
+      |> Map.get(:query)
+      |> URI.decode_query()
 
     cond do
       url["cp"] ->
-        html = Phoenix.View.render_to_string(GabblerWeb.EmbedView, "bing_map.html", %{
-          :coord => url["cp"], 
-          :position => String.replace(url["cp"], "~", "_")})
-        
-        process_tags(meta, t, [{:html, html}|acc])
+        html =
+          Phoenix.View.render_to_string(GabblerWeb.EmbedView, "bing_map.html", %{
+            :coord => url["cp"],
+            :position => String.replace(url["cp"], "~", "_")
+          })
+
+        process_tags(meta, t, [{:html, html} | acc])
+
       true ->
         process_tags(meta, t, acc)
     end
   end
 
-  defp process_tags(meta, [_|t], acc), do: process_tags(meta, t, acc)
+  defp process_tags(meta, [_ | t], acc), do: process_tags(meta, t, acc)
 end

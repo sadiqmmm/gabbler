@@ -3,7 +3,6 @@ defmodule Gabbler.User.Application do
 
   alias Gabbler.User.Server, as: UserServer
 
-
   def start_link(_arg) do
     DynamicSupervisor.start_link(__MODULE__, :ok, name: __MODULE__)
   end
@@ -12,9 +11,9 @@ defmodule Gabbler.User.Application do
     DynamicSupervisor.init(strategy: :one_for_one)
   end
 
-  def add_child(user, subs, moderating) do    
+  def add_child(user, subs, moderating) do
     child_spec = {UserServer, {user, subs, moderating}}
-    
+
     DynamicSupervisor.start_child(__MODULE__, child_spec)
   end
 

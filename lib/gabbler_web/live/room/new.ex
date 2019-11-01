@@ -7,7 +7,6 @@ defmodule GabblerWeb.Live.Room.New do
 
   alias GabblerData.{Room, Post, User, PostMeta}
 
-
   def render(assigns) do
     ~L"""
       <%= Phoenix.View.render(GabblerWeb.RoomView, "index.html", assigns) %>
@@ -26,32 +25,58 @@ defmodule GabblerWeb.Live.Room.New do
   @doc """
   Handle a form update event where Room parameters were adjusted or the Room create/update form was submit
   """
-  def handle_event("update_room", %{"_target" => ["room", "name"], "room" => %{"name" => name}}, socket) do
+  def handle_event(
+        "update_room",
+        %{"_target" => ["room", "name"], "room" => %{"name" => name}},
+        socket
+      ) do
     {:noreply, update_room_assign(:name, name, socket)}
   end
 
-  def handle_event("update_room", %{"_target" => ["room", "title"], "room" => %{"title" => title}}, socket) do
+  def handle_event(
+        "update_room",
+        %{"_target" => ["room", "title"], "room" => %{"title" => title}},
+        socket
+      ) do
     {:noreply, update_room_assign(:title, title, socket)}
   end
 
-  def handle_event("update_room", %{"_target" => ["room", "description"], "room" => %{"description" => description}}, socket) do
+  def handle_event(
+        "update_room",
+        %{"_target" => ["room", "description"], "room" => %{"description" => description}},
+        socket
+      ) do
     {:noreply, update_room_assign(:description, description, socket)}
   end
 
-  def handle_event("update_room", %{"_target" => ["room", "age"], "room" => %{"age" => age}}, socket) do
+  def handle_event(
+        "update_room",
+        %{"_target" => ["room", "age"], "room" => %{"age" => age}},
+        socket
+      ) do
     {:noreply, update_room_assign(:age, age, socket)}
   end
 
-  def handle_event("update_room", %{"_target" => ["room", "type"], "room" => %{"type" => type}}, socket) do
+  def handle_event(
+        "update_room",
+        %{"_target" => ["room", "type"], "room" => %{"type" => type}},
+        socket
+      ) do
     {:noreply, update_room_assign(:type, type, socket)}
   end
 
   def handle_event("update_room", _, socket), do: {:noreply, socket}
 
-  def handle_event("submit", _, %{assigns: %{changeset: changeset, room: room, mode: :create}} = socket) do
+  def handle_event(
+        "submit",
+        _,
+        %{assigns: %{changeset: changeset, room: room, mode: :create}} = socket
+      ) do
     case query(:room).create(changeset) do
       {:ok, room} ->
-        {:noreply, assign(socket, room: room, changeset: Room.changeset(room), mode: :update, updated: true)}
+        {:noreply,
+         assign(socket, room: room, changeset: Room.changeset(room), mode: :update, updated: true)}
+
       {:error, changeset} ->
         {:noreply, assign(socket, changeset: changeset, room: room)}
     end
@@ -61,6 +86,7 @@ defmodule GabblerWeb.Live.Room.New do
     case query(:room).update(changeset) do
       {:ok, room} ->
         {:noreply, assign(socket, room: room, mode: :update, updated: true)}
+
       {:error, changeset} ->
         {:noreply, assign(socket, changeset: changeset)}
     end
@@ -72,18 +98,20 @@ defmodule GabblerWeb.Live.Room.New do
     case query(:room).get(name) do
       nil ->
         assign(socket, default_assigns())
+
       room ->
-        assign(socket, 
+        assign(socket,
           changeset: Room.changeset(room),
-          room: room, 
-          status: nil, 
+          room: room,
+          status: nil,
           room_type: "room",
           posts: Post.mock_data(),
           post_metas: PostMeta.mock_data(),
           mode: :update,
           updated: false,
           user: User.mock_data(),
-          users: %{1 => User.mock_data(), 2 => User.mock_data(), 3 => User.mock_data()})
+          users: %{1 => User.mock_data(), 2 => User.mock_data(), 3 => User.mock_data()}
+        )
     end
   end
 
@@ -94,15 +122,16 @@ defmodule GabblerWeb.Live.Room.New do
   defp update_room_assign(key, value, %{assigns: %{room: room, changeset: changeset}} = socket) do
     room = Map.put(room, key, value)
 
-    assign(socket, 
+    assign(socket,
       room: room,
       changeset: update_changeset(changeset, key, value)
     )
   end
 
   defp update_changeset(changeset, key, value) do
-    changeset = %{changeset | :errors => Keyword.delete(changeset.errors, key)}
-    |> Room.changeset(%{key => value})
+    changeset =
+      %{changeset | :errors => Keyword.delete(changeset.errors, key)}
+      |> Room.changeset(%{key => value})
 
     case changeset do
       %{:errors => []} -> %{changeset | :valid? => true}
@@ -113,8 +142,8 @@ defmodule GabblerWeb.Live.Room.New do
   defp default_assigns() do
     [
       changeset: Room.changeset(default_room()),
-      room: %Room{type: "public", age: 0}, 
-      status: nil, 
+      room: %Room{type: "public", age: 0},
+      status: nil,
       room_type: "room",
       posts: Post.mock_data(),
       post_metas: PostMeta.mock_data(),
@@ -125,9 +154,11 @@ defmodule GabblerWeb.Live.Room.New do
     ]
   end
 
-  defp default_room(), do: %Room{
-      type: "public", 
-      age: 0, 
-      user_id_creator: 1, 
-      reputation: Application.get_env(:gabbler, :default_room_reputation, 0)}
+  defp default_room(),
+    do: %Room{
+      type: "public",
+      age: 0,
+      user_id_creator: 1,
+      reputation: Application.get_env(:gabbler, :default_room_reputation, 0)
+    }
 end

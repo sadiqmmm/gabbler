@@ -7,15 +7,16 @@ defmodule Gabbler do
   @doc """
   Query the 
   """
-  def query(module), do: Application.get_env(:gabbler, :query, GabblerData.Query)
-  |> Module.concat(to_module(module))
-
+  def query(module),
+    do:
+      Application.get_env(:gabbler, :query, GabblerData.Query)
+      |> Module.concat(to_module(module))
 
   # PRIVATE FUNCTIONS
   ###################
-  defp to_module(:post), do: :"Post"
-  defp to_module(:room), do: :"Room"
-  defp to_module(:user), do: :"User"
-  defp to_module(:moderating), do: :"Moderating"
-  defp to_module(:subscription), do: :"Subscription"
+  defp to_module(:post), do: :Post
+  defp to_module(:room), do: :Room
+  defp to_module(:user), do: :User
+  defp to_module(:moderating), do: :Moderating
+  defp to_module(:subscription), do: :Subscription
 end
