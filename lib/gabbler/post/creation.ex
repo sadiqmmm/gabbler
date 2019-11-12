@@ -2,10 +2,10 @@ defmodule Gabbler.PostCreation do
   @moduledoc """
   Helping functions for Creating a Post
   """
+  import Gabbler
   import GabblerWeb.Gettext
 
   alias GabblerData.Room
-  alias GabblerData.Query.Post, as: QueryPost
 
   @doc """
   Handle post creation steps and reactions
@@ -13,7 +13,7 @@ defmodule Gabbler.PostCreation do
   def create(user, room, changeset, changeset_meta) do
     case Gabbler.User.can_post?(user) do
       true ->
-        QueryPost.create(prepare_changeset(room, changeset), changeset_meta)
+        query(:post).create(prepare_changeset(room, changeset), changeset_meta)
 
       false ->
         {:error,

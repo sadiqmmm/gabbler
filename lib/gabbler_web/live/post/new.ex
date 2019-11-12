@@ -4,6 +4,7 @@ defmodule GabblerWeb.Live.Post.New do
   """
   use Phoenix.LiveView
   import Gabbler, only: [query: 1]
+  import GabblerWeb.Live.Socket, only: [no_reply: 1]
 
   alias Gabbler.PostCreation
   alias GabblerData.{Post, PostMeta}
@@ -31,7 +32,8 @@ defmodule GabblerWeb.Live.Post.New do
         %{"_target" => ["post", "title"], "post" => %{"title" => title}},
         socket
       ) do
-    {:noreply, update_post_assign(:title, title, socket)}
+    update_post_assign(socket, :title, title)
+    |> no_reply()
   end
 
   def handle_event(
@@ -39,7 +41,8 @@ defmodule GabblerWeb.Live.Post.New do
         %{"_target" => ["post", "body"], "post" => %{"body" => body}},
         socket
       ) do
-    {:noreply, update_post_assign(:body, body, socket)}
+    update_post_assign(socket, :body, body)
+    |> no_reply()
   end
 
   def handle_event(
@@ -47,7 +50,8 @@ defmodule GabblerWeb.Live.Post.New do
         %{"_target" => ["post_meta", "link"], "post_meta" => %{"link" => link}},
         socket
       ) do
-    {:noreply, update_post_meta_assign(:link, link, socket)}
+    update_post_meta_assign(socket, :link, link)
+    |> no_reply()
   end
 
   def handle_event(
@@ -55,7 +59,8 @@ defmodule GabblerWeb.Live.Post.New do
         %{"_target" => ["post_meta", "image"], "post_meta" => %{"image" => image}},
         socket
       ) do
-    {:noreply, assign(socket, upload: image)}
+    assign(socket, upload: image)
+    |> no_reply()
   end
 
   def handle_event(
@@ -63,11 +68,13 @@ defmodule GabblerWeb.Live.Post.New do
         %{"_target" => ["post_meta", "tags"], "post_meta" => %{"tags" => tags}},
         socket
       ) do
-    {:noreply, update_post_meta_assign(:tags, tags, socket)}
+    update_post_meta_assign(socket, :tags, tags)
+    |> no_reply()
   end
 
   def handle_event("update_post", _, socket), do: {:noreply, socket}
 
+  # TODO: too much logic.. belongs in Gabbler namespace
   def handle_event(
         "submit",
         _,
@@ -98,27 +105,27 @@ defmodule GabblerWeb.Live.Post.New do
           :meta => meta
         })
 
-        {:noreply,
-         assign(socket,
-           post: post,
-           post_meta: meta,
-           changeset: Post.changeset(post),
-           changeset_meta: PostMeta.changeset(meta),
-           mode: :update,
-           updated: update_updated(updated)
-         )}
+        assign(socket,
+          post: post,
+          post_meta: meta,
+          changeset: Post.changeset(post),
+          changeset_meta: PostMeta.changeset(meta),
+          mode: :update,
+          updated: update_updated(updated)
+        )
 
       {:error, {:post, changeset}} ->
-        {:noreply, assign(socket, changeset: changeset)}
+        assign(socket, changeset: changeset)
 
       {:error, {:post_meta, changeset}} ->
-        {:noreply, assign(socket, changeset_meta: changeset)}
+        assign(socket, changeset_meta: changeset)
 
       {:error, error_str} ->
         GabblerWeb.Endpoint.broadcast("user:#{user.id}", "warning", %{msg: error_str})
 
-        {:noreply, socket}
+        socket
     end
+    |> no_reply()
   end
 
   def handle_event(
@@ -156,7 +163,8 @@ defmodule GabblerWeb.Live.Post.New do
           [changeset_meta: changeset]
       end
 
-    {:noreply, assign(socket, Keyword.merge(update_set, update_meta_set))}
+    assign(socket, Keyword.merge(update_set, update_meta_set))
+    |> no_reply()
   end
 
   def handle_event("submit", _, %{assigns: %{mode: :create}} = socket) do
@@ -177,6 +185,9 @@ defmodule GabblerWeb.Live.Post.New do
       post: %Post{user_id_post: user_id},
       body: "",
       post_meta: %PostMeta{user_id: user_id},
+      changeset_reply: nil,
+      page: 1,
+      pages: 1,
       comments: [],
       upload: nil,
       parent: nil,
@@ -191,7 +202,7 @@ defmodule GabblerWeb.Live.Post.New do
     )
   end
 
-  defp update_post_assign(:body, value, %{assigns: %{post: post, changeset: changeset}} = socket) do
+  defp update_post_assign(%{assigns: %{post: post, changeset: changeset}} = socket, :body, value) do
     sanitized_value = HtmlSanitizeEx.strip_tags(value)
 
     post = Map.put(post, :body, sanitized_value)
@@ -203,7 +214,7 @@ defmodule GabblerWeb.Live.Post.New do
     )
   end
 
-  defp update_post_assign(key, value, %{assigns: %{post: post, changeset: changeset}} = socket) do
+  defp update_post_assign(%{assigns: %{post: post, changeset: changeset}} = socket, key, value) do
     post = Map.put(post, key, value)
 
     assign(socket,
@@ -213,9 +224,9 @@ defmodule GabblerWeb.Live.Post.New do
   end
 
   defp update_post_meta_assign(
+         %{assigns: %{post_meta: post_meta, changeset_meta: changeset}} = socket,
          key,
-         value,
-         %{assigns: %{post_meta: post_meta, changeset_meta: changeset}} = socket
+         value
        ) do
     post_meta = Map.put(post_meta, key, value)
 

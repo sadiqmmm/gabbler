@@ -20,6 +20,7 @@ defmodule Gabbler.Plug.UserSession do
 
       user ->
         assign(conn, :user, user)
+        |> assign(:temp_token, nil)
     end
   end
 end

@@ -122,7 +122,6 @@ defmodule Gabbler.TagTracker.Server do
     {tag_remain, texit} =
       Enum.uniq(queue)
       |> Enum.split(Application.get_env(:gabbler, :tags_max_per_server))
-      |> IO.inspect()
 
     # Cull tags and update scoring windows
     tags =

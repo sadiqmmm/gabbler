@@ -1,44 +1,39 @@
 defmodule GabblerWeb.RoomController do
   use GabblerWeb, :controller
 
-  import Phoenix.LiveView.Controller
-
+  alias Gabbler.Live, as: GabblerLive
   alias GabblerData.Query.Room, as: QueryRoom
 
   plug Gabbler.Plug.UserSession
 
   def new(conn, params) do
-    live_render(conn, GabblerWeb.Live.Room.New, session: params)
+    GabblerLive.render(conn, GabblerWeb.Live.Room.New, params)
   end
 
-  def room(%{assigns: %{user: user}} = conn, %{"room" => name, "mode" => "live"}) do
+  def room(conn, %{"room" => name, "mode" => "live"}) do
     case QueryRoom.get(name) do
       nil ->
         room_404(conn)
 
       room ->
-        live_render(conn, GabblerWeb.Live.Room.Index,
-          session: %{room: room, user: user, mode: :live}
-        )
+        GabblerLive.render(conn, GabblerWeb.Live.Room.Index, %{room: room, mode: :live})
     end
   end
 
-  def room(%{assigns: %{user: user}} = conn, %{"room" => name, "mode" => "new"}) do
+  def room(conn, %{"room" => name, "mode" => "new"}) do
     case QueryRoom.get(name) do
       nil ->
         room_404(conn)
 
       room ->
-        live_render(conn, GabblerWeb.Live.Room.Index,
-          session: %{room: room, user: user, mode: :new}
-        )
+        GabblerLive.render(conn, GabblerWeb.Live.Room.Index, %{room: room, mode: :new})
     end
   end
 
-  def room(%{assigns: %{user: user}} = conn, %{"room" => name}) do
+  def room(conn, %{"room" => name}) do
     case QueryRoom.get(name) do
       nil -> room_404(conn)
-      room -> live_render(conn, GabblerWeb.Live.Room.Index, session: %{room: room, user: user})
+      room -> GabblerLive.render(conn, GabblerWeb.Live.Room.Index, %{room: room})
     end
   end
 

@@ -126,6 +126,13 @@ defmodule Gabbler.User.Server do
   end
 
   @impl true
+  def handle_call({:remove_activity, id}, _from, %ActivityModel{activity: activity} = state) do
+    activity_filtered = Enum.filter(activity, fn {act_id, _} -> act_id != id end)
+
+    {:reply, activity_filtered, %{state | activity: activity_filtered}}
+  end
+
+  @impl true
   def handle_call({:can_vote, hash}, _from, %ActivityModel{} = state) do
     state = prune_state(state)
 
@@ -152,6 +159,11 @@ defmodule Gabbler.User.Server do
   @impl true
   def handle_call(:get_moderating, _from, %ActivityModel{moderating: moderating} = state) do
     {:reply, moderating, state}
+  end
+
+  @impl true
+  def handle_call({:moderating, _room}, _from, %ActivityModel{moderating: _moderating} = state) do
+    {:reply, true, state}
   end
 
   @impl true

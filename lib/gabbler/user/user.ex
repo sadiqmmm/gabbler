@@ -61,6 +61,13 @@ defmodule Gabbler.User do
   end
 
   @doc """
+  Remove a single activity key
+  """
+  def remove_activity(user, id) do
+    call(user, :remove_activity, id)
+  end
+
+  @doc """
   Update the read receipt status, indicating there are unread notices
   """
   def update_read_receipt(user, true) do
@@ -114,6 +121,13 @@ defmodule Gabbler.User do
   end
 
   @doc """
+  Return whether a user is the mod of a room
+  """
+  def moderating?(user, room) do
+    call(user, :moderating, room)
+  end
+
+  @doc """
   Create a server name based on a user so it can be found easily by id
   """
   def server_name(%User{id: id}), do: {:via, :syn, "USER_#{Integer.to_string(id)}"}
@@ -157,12 +171,8 @@ defmodule Gabbler.User do
           )
 
         moderating =
-          Enum.reduce(QueryModerating.list(user, join: :room, limit: @max_moderating), [], fn {_,
-                                                                                               %{
-                                                                                                 name:
-                                                                                                   name
-                                                                                               }},
-                                                                                              acc ->
+          QueryModerating.list(user, join: :room, limit: @max_moderating)
+          |> Enum.reduce([], fn {_, %{name: name}}, acc ->
             [name | acc]
           end)
 

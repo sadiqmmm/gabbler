@@ -45,28 +45,24 @@
       &nbsp;&nbsp;&nbsp;Or view <a class="button-action" href="/r/<%= @room.name %>/comments/<%= @post.hash %>/<%= @post.title %>/view/new">New</a> 
       <a class="button-action" href="/r/<%= @room.name %>/comments/<%= @post.hash %>/<%= @post.title %>">Hot</a> 
       <a class="button-action" href="/r/<%= @room.name %>/comments/<%= @post.hash %>/<%= @post.title %>/view/live">Live</a>
-
       <%= if @mod do %>
-        <a href="#" class="moddelete mod-action">Delete</a>
+        <a href="#" class="mod-action" phx-click="delete_post" phx-value-hash="<%= @post.hash %>">Delete</a>
       <% end %>
 
       <div class="hidden interactive">| <a href="#" class="load-thread">New</a></div>
     </div>
-    <%= if assigns[:reply_display] do %>
+
+    <%= if @changeset_reply && assigns[:reply_display] do %>
       <%= render @view_module, "form_reply.html", %{display: @reply_display, changeset: @changeset_reply} %>
     <% end %>
   </div>
 
   <div class="op-reply" id="comment-reply-<%= @post.hash %>" data-commentdepth="0"></div>
+
+  <%= render @view_module, "post_thread.html", assigns %>
 </div>
 
-<div class="comments">
-  <%= for comment <- @comments do %>
-    <%= render @view_module, "comment.html", %{op: @post, comment: comment, user: @user, room: @room, mod: @mod} %>
-  <% end %>
-</div>
-
-<%= if assigns[:reply_comment_display] do %>
+<%= if @changeset_reply && assigns[:reply_comment_display] do %>
   <%= render @view_module, "form_reply_comment.html", %{display: @reply_comment_display, changeset: @changeset_reply} %>
 <% end %>
 

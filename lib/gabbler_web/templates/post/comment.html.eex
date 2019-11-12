@@ -12,14 +12,11 @@
         <a href="#" class="reply" phx-click="reply_comment" phx-value-to="<%= @comment.hash %>">Reply</a> | 
       <% end %>
       <a href="/r/<%= @room.name %>/comments/<%= @op.hash %>/<%= @op.title %>/focus/<%= @comment.hash %>">Focus</a>
-      <%= if @user && @comment.user_id_post == @user.id do %>
-        | <a href="#" class="edit">Edit</a>
-      <% end %>
       <%= if @comment.depth == 1 do %>
-        | <a href="#" class="collapse-thread">Collapse</a>
+        | <a href="#" phx-click="hide_thread" phx-value-id="<%= @comment.id %>">Hide</a>
       <% end %>
       <%= if @mod do %>
-        | <a href="#" class="moddelete mod-action">Delete</a>
+        | <a href="#" class="mod-action" phx-click="delete_post" phx-value-hash="<%= @comment.hash %>">Delete</a>
       <% end %>
     </div>
   </div>

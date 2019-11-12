@@ -83,8 +83,9 @@ nav .menu {
   right: 2px;
   z-index: 100;
 }
+nav .info,
 nav .warning {
-  position: absolute;
+  position: fixed;
   top: 43px;
   right: 9px;
   z-index: 110;
@@ -94,6 +95,13 @@ nav .warning {
   border-top-right-radius: 0;
   padding: 21px;
 }
+nav .info {
+  background-color: #e29739;
+}
+nav p {
+  margin: 0;
+}
+
 .menu .options a,
 nav .menu .menu-item {
   width: 305px;
@@ -127,11 +135,16 @@ nav .menu .menu-item {
   background: none;
   text-align: left;
 }
+.menu .new-activity a {
+  background-color: #3984e2;
+  padding: 5px;
+}
 .menu .activity div {
-  margin: 0 0 15px 0;
+  margin: 0 0 10px 0;
   color: #FFF;
   font-size: 9pt;
   padding-left: 5px;
+  height: -webkit-fill-available;
 }
 .menu .activity .user-mod:last-child
 .menu .activity .user-sub:last-child
@@ -152,6 +165,7 @@ nav .menu .menu-item {
 }
 .negation {
   background-color: #9A3600;
+  border-color: #4b1a00;
 }
 
 /* AUTH */
@@ -294,6 +308,7 @@ nav .menu .menu-item {
 
 .main-content {
   position: relative;
+  padding-left: 10px;
 }
 
 .frontpage {
@@ -562,7 +577,7 @@ nav .menu .menu-item {
   border-top: 15px solid transparent;
   border-bottom: 15px solid transparent;
   
-  border-left: 15px solid #a94442;
+  border-left: 15px solid #377ab7;
 }
 
 .arrow-left {
@@ -571,7 +586,7 @@ nav .menu .menu-item {
   border-top: 15px solid transparent;
   border-bottom: 15px solid transparent; 
   
-  border-right: 15px solid #a94442; 
+  border-right: 15px solid #377ab7; 
 }
 
 .arrow-down-used {
@@ -632,6 +647,24 @@ nav .menu .menu-item {
 }
 .form-group-right {
   text-align: right;
+}
+
+.comment-controls-container {
+  width: 100%;
+}
+.comment-controls {
+  margin: 0 auto;
+  display: table;
+}
+.comment-controls .page-number {
+  font-size: 14pt;
+  line-height: 29px;
+  padding: 0 10px;
+}
+.comment-controls .page-number,
+.comment-controls .arrow-left,
+.comment-controls .arrow-right {
+  float: left;
 }
 
 .comments {
@@ -850,6 +883,16 @@ nav .menu .menu-item {
 }
 
 /**
+ * Important
+ */
+.konami {
+  padding-left: 20px;
+  font-size: 14pt;
+  font-style: italic;
+  color: #c24e10;
+}
+
+/**
  * Form specific
  */
 .form-halfpage {
@@ -865,12 +908,16 @@ nav .menu .menu-item {
 /*
  * Gabbler flash messages
  */
+.alert-danger,
 .alert-info {
   background-color: #3984e2;
   color: #fff;
   margin: 0;
   padding: 15px;
   font-weight: bold;
+}
+.alert-danger {
+  background-color: #c24e10;
 }
 
 /* 

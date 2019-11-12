@@ -27,6 +27,8 @@ defmodule Gabbler.Post.Meta do
   end
 
   @impl true
+  def filter_tags(nil), do: []
+
   def filter_tags(tags) do
     String.split(tags, ",", trim: true)
     |> filter_tags()

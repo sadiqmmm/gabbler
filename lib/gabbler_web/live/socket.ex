@@ -1,4 +1,4 @@
-defmodule GabblerWeb.Live.UtilSocket do
+defmodule GabblerWeb.Live.Socket do
   @moduledoc """
   All functions here should accept a socket and return a socket. Meant for common functionality related
   to forms and liveviews. This module is best used via import
@@ -7,18 +7,27 @@ defmodule GabblerWeb.Live.UtilSocket do
 
   alias GabblerData.{Room, Post, PostMeta, Comment, User}
 
-  def update_assign(changeset_name, type, key, value, %{assigns: assigns} = socket) do
+  @doc """
+  Alias for :noreply on sockets to assist with piping code-flows
+  """
+  def no_reply(socket), do: {:noreply, socket}
+
+  @doc """
+  Update a changeset in a way standard to many of gabbler's liveview forms
+  """
+  def update_changeset(%{assigns: assigns} = socket, changeset_name, type, key, value) do
     changeset = Map.get(assigns, changeset_name)
-    value_update = Map.get(assigns, type)
-    updated_struct = Map.put(value_update, key, value)
+    updated_struct = Map.put(Map.get(assigns, type), key, value)
 
     assign(socket, [
       {type, updated_struct},
-      {changeset_name, update_changeset(changeset, type, key, value)}
+      {changeset_name, update_changeset_val(changeset, type, key, value)}
     ])
   end
 
-  def update_changeset(changeset, type, key, value) do
+  # PRIVATE FUNCTIONS
+  ###################
+  defp update_changeset_val(changeset, type, key, value) do
     changeset =
       %{changeset | :errors => Keyword.delete(changeset.errors, key)}
       |> changeset_model(type).changeset(%{key => value})

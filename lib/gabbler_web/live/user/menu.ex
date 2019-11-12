@@ -4,6 +4,7 @@ defmodule GabblerWeb.Live.User.Menu do
   """
   use Phoenix.LiveView
   import Gabbler, only: [query: 1]
+  import GabblerWeb.Gettext
 
   alias GabblerData.User
 
@@ -22,9 +23,9 @@ defmodule GabblerWeb.Live.User.Menu do
     {:ok, init(session, socket)}
   end
 
-  def handle_info(:warning_expire, socket) do
-    {:noreply, assign(socket, warning: nil)}
-  end
+  def handle_info(:warning_expire, socket), do: {:noreply, assign(socket, warning: nil)}
+
+  def handle_info(:info_expire, socket), do: {:noreply, assign(socket, info: nil)}
 
   def handle_info(
         %{event: "subscribed", payload: %{"room_name" => name}},
@@ -56,14 +57,27 @@ defmodule GabblerWeb.Live.User.Menu do
   end
 
   def handle_info(
+        %{event: "mod_request", payload: %{id: room_name}},
+        %{assigns: %{activity: activity}} = socket
+      ) do
+    {:noreply,
+     assign(socket,
+       activity: Enum.take([{room_name, "mod_request"} | activity], @max_activity_shown)
+     )}
+  end
+
+  def handle_info(
         %{event: "reply", payload: %{id: post_id}},
-        %{assigns: %{activity: activity, posts: posts, rooms: rooms}} = socket
+        %{assigns: %{activity: activity, posts: posts, rooms: rooms, user: user}} = socket
       ) do
     if Map.get(rooms, post_id) do
       {:noreply,
        assign(socket, activity: Enum.take([{post_id, "reply"} | activity], @max_activity_shown))}
     else
       post = query(:post).get(post_id)
+
+      # Refresh the post in users activity log
+      _ = Gabbler.User.activity_posted(user, post.hash)
 
       {:noreply,
        assign(socket,
@@ -81,6 +95,13 @@ defmodule GabblerWeb.Live.User.Menu do
     {:noreply, assign(socket, warning: msg)}
   end
 
+  def handle_info(%{event: "info", payload: %{msg: msg}}, socket) do
+    Process.send_after(self(), :info_expire, 4000)
+
+    # TODO: create a container for the message and update state to activate it
+    {:noreply, assign(socket, info: msg)}
+  end
+
   def handle_event("login", _, %{assigns: %{temp_token: token}} = socket) do
     GabblerWeb.Endpoint.broadcast("user:#{token}", "login_show", %{})
 
@@ -93,6 +114,26 @@ defmodule GabblerWeb.Live.User.Menu do
 
   def handle_event("toggle_menu", _, %{assigns: %{menu_open: true}} = socket) do
     {:noreply, assign(socket, menu_open: false)}
+  end
+
+  def handle_event("accept_mod", %{"id" => room_name}, %{assigns: %{user: user}} = socket) do
+    case query(:moderating).moderate(user, query(:room).get(room_name)) do
+      {:ok, _moderating} ->
+        GabblerWeb.Endpoint.broadcast("user:#{user.id}", "info", %{
+          msg: gettext("added as moderator")
+        })
+
+      {:error, _} ->
+        GabblerWeb.Endpoint.broadcast("user:#{user.id}", "warning", %{
+          msg: gettext("there was an issue adding you as moderator")
+        })
+    end
+
+    {:noreply, assign(socket, Gabbler.User.remove_activity(user, room_name))}
+  end
+
+  def handle_event("decline_mod", %{"id" => room_name}, %{assigns: %{user: user}} = socket) do
+    {:noreply, assign(socket, activity: Gabbler.User.remove_activity(user, room_name))}
   end
 
   # PRIV
@@ -108,6 +149,7 @@ defmodule GabblerWeb.Live.User.Menu do
       user: user,
       menu_open: false,
       warning: nil,
+      info: nil,
       subscriptions: Gabbler.User.subscriptions(user),
       moderating: Gabbler.User.moderating(user),
       posts: posts,
@@ -120,45 +162,10 @@ defmodule GabblerWeb.Live.User.Menu do
     assign(socket,
       user: nil,
       warning: nil,
+      info: nil,
       temp_token: temp_token,
       menu_open: false
     )
-  end
-
-  defp subscribe_room(%{assigns: %{subscriptions: subscriptions}} = socket, room_name) do
-    case Map.get(subscriptions, "r#{room_name}") do
-      nil ->
-        assign(socket,
-          subscriptions:
-            Map.put(
-              subscriptions,
-              "r#{room_name}",
-              GabblerWeb.Endpoint.subscribe("room_live:#{room_name}")
-            )
-        )
-
-      :ok ->
-        socket
-
-      {:error, _error} ->
-        socket
-    end
-  end
-
-  defp subscribe_post(%{assigns: %{subscriptions: subscriptions}} = socket, hash) do
-    case Map.get(subscriptions, "p#{hash}") do
-      nil ->
-        assign(socket,
-          subscriptions:
-            Map.put(subscriptions, "p#{hash}", GabblerWeb.Endpoint.subscribe("post_live:#{hash}"))
-        )
-
-      :ok ->
-        socket
-
-      {:error, _error} ->
-        socket
-    end
   end
 
   defp hash_to_post(user_posts) do

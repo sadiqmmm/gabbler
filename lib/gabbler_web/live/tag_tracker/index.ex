@@ -69,14 +69,4 @@ defmodule GabblerWeb.Live.TagTracker.Index do
 
   # PRIV
   #############################
-  defp map_to_posts(tracked_posts), do: map_to_posts(tracked_posts, [])
-
-  defp map_to_posts([], acc), do: acc
-
-  defp map_to_posts([{_, post_id} | t], acc) do
-    case query(:post).get(post_id) do
-      nil -> map_to_posts(t, acc)
-      post -> map_to_posts(t, [post | acc])
-    end
-  end
 end

@@ -1,9 +1,9 @@
-defmodule GabblerWeb.Live.User.Auth do
+defmodule GabblerWeb.Live.User.Login do
   @moduledoc """
   Authentication live view to manage the ui based on a users status and actions
   """
   use Phoenix.LiveView
-  import GabblerWeb.Live.UtilSocket, only: [update_assign: 5]
+  import GabblerWeb.Live.Socket, only: [no_reply: 1, update_changeset: 5]
 
   alias GabblerData.User
 
@@ -20,28 +20,30 @@ defmodule GabblerWeb.Live.User.Auth do
     {:ok, init(session, socket)}
   end
 
-  def handle_info(%{event: "login_show", payload: _}, socket) do
-    {:noreply, assign(socket, show_auth: true)}
-  end
+  def handle_info(%{event: "login_show", payload: _}, socket),
+    do:
+      assign(socket, show_auth: true)
+      |> no_reply()
 
-  def handle_event("login_show", _, socket), do: {:noreply, assign(socket, show_auth: true)}
-  def handle_event("login_hide", _, socket), do: {:noreply, assign(socket, show_auth: false)}
+  def handle_event("login_show", _, socket), do: no_reply(assign(socket, show_auth: true))
+  def handle_event("login_hide", _, socket), do: no_reply(assign(socket, show_auth: false))
 
   def handle_event("login_mode", %{"mode" => "login"}, socket),
-    do: {:noreply, assign(socket, mode: :login)}
+    do: no_reply(assign(socket, mode: :login))
 
   def handle_event("login_mode", %{"mode" => "register"}, socket),
-    do: {:noreply, assign(socket, mode: :register)}
+    do: no_reply(assign(socket, mode: :register))
 
   def handle_event("login_mode", %{"mode" => "logout"}, socket),
-    do: {:noreply, assign(socket, mode: :logout)}
+    do: no_reply(assign(socket, mode: :logout))
 
   def handle_event(
         "login_change",
         %{"_target" => ["user", "username"], "user" => %{"username" => name}},
         socket
       ) do
-    {:noreply, update_assign(:changeset_user, :user, :name, name, socket)}
+    update_changeset(socket, :changeset_user, :user, :name, name)
+    |> no_reply()
   end
 
   def handle_event(
@@ -49,7 +51,8 @@ defmodule GabblerWeb.Live.User.Auth do
         %{"_target" => ["user", "password"], "user" => %{"password" => password}},
         socket
       ) do
-    {:noreply, update_assign(:changeset_user, :user, :password_hash, password, socket)}
+    update_changeset(socket, :changeset_user, :user, :password_hash, password)
+    |> no_reply()
   end
 
   def handle_event(
@@ -57,7 +60,8 @@ defmodule GabblerWeb.Live.User.Auth do
         %{"_target" => ["user", "password_confirm"], "user" => %{"password_confirm" => password}},
         socket
       ) do
-    {:noreply, update_assign(:changeset_user, :user, :password_hash_confirm, password, socket)}
+    update_changeset(socket, :changeset_user, :user, :password_hash_confirm, password)
+    |> no_reply()
   end
 
   def handle_event(
@@ -65,7 +69,8 @@ defmodule GabblerWeb.Live.User.Auth do
         %{"_target" => ["user", "email"], "user" => %{"email" => email}},
         socket
       ) do
-    {:noreply, update_assign(:changeset_user, :user, :email, email, socket)}
+    update_changeset(socket, :changeset_user, :user, :email, email)
+    |> no_reply()
   end
 
   # PRIV

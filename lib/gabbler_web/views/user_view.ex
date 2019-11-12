@@ -10,4 +10,6 @@ defmodule GabblerWeb.UserView do
       end
     end)
   end
+
+  def get_activity_subjects(_posts, _rooms, room_name, "mod_request"), do: room_name
 end
