@@ -1,4 +1,4 @@
-defmodule ExpertUi.ReleaseTasks do
+defmodule Gabbler.ReleaseTasks do
   @moduledoc """
   Run tasks related to new or migrating systems
   """
