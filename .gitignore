@@ -2,7 +2,6 @@
 /_build/
 
 /config/dev.exs
-/config/prod.exs
 /config/prod.secret.exs
 
 # If you run "mix test --cover", coverage assets end up here.
@@ -38,3 +37,4 @@ npm-debug.log
 /priv/static/
 
 /rel
+.deliver
