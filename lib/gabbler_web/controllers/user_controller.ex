@@ -3,9 +3,10 @@ defmodule GabblerWeb.UserController do
 
   plug Gabbler.Plug.UserSession
 
+  import Gabbler, only: [query: 1]
+
   alias GabblerData.User
-  alias GabblerData.Query.User, as: QueryUser
-  alias GabblerData.Query.Post, as: QueryPost
+  
   alias Gabbler.Auth.Guardian
 
   def index(conn, _params) do
@@ -13,18 +14,18 @@ defmodule GabblerWeb.UserController do
   end
 
   def profile(conn, %{"username" => name}) do
-    case QueryUser.get(URI.decode(name)) do
+    case query(:user).get(URI.decode(name)) do
       nil ->
         user_404(conn)
 
       %{id: user_id} = user ->
-        posts = QueryPost.list(by_user: user_id, order_by: :inserted_at, only: :op)
+        posts = query(:post).list(by_user: user_id, order_by: :inserted_at, only: :op)
 
         render(conn, "profile.html",
           user: user,
           posts: posts,
-          rooms: QueryPost.map_rooms(posts),
-          post_metas: QueryPost.map_meta(posts)
+          rooms: query(:post).map_rooms(posts),
+          post_metas: query(:post).map_meta(posts)
         )
     end
   end
@@ -74,11 +75,11 @@ defmodule GabblerWeb.UserController do
     changeset =
       User.changeset(%User{}, %{name: name, password_hash: pass, password_hash_confirm: pass_conf})
 
-    QueryUser.create(changeset)
+    query(:user).create(changeset)
   end
 
   defp login(name, password) do
-    QueryUser.authenticate(name, password)
+    query(:user).authenticate(name, password)
   end
 
   defp user_404(conn),

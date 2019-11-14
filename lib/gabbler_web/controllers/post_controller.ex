@@ -2,13 +2,13 @@ defmodule GabblerWeb.PostController do
   use GabblerWeb, :controller
 
   alias Gabbler.Live, as: GabblerLive
-  alias GabblerData.Query.Room, as: QueryRoom
-  alias GabblerData.Query.Post, as: QueryPost
+  import Gabbler, only: [query: 1]
 
   plug Gabbler.Plug.UserSession
 
+
   def new(conn, %{"room" => name}) do
-    case QueryRoom.get(name) do
+    case query(:room).get(name) do
       nil -> post_404(conn)
       room -> GabblerLive.render(conn, GabblerWeb.Live.Post.New, %{room: room})
     end
@@ -29,7 +29,8 @@ defmodule GabblerWeb.PostController do
   end
 
   defp post_render(conn, %{room_name: name, hash: hash, mode: mode}) do
-    case {QueryRoom.get(name), QueryPost.get(hash)} do
+    # TODO: get this ugly looking logic into it's own module
+    case {query(:room).get(name), query(:post).get(hash)} do
       {room, post} when is_nil(room) or is_nil(post) ->
         post_404(conn)
 
@@ -44,7 +45,8 @@ defmodule GabblerWeb.PostController do
   end
 
   defp post_render(conn, %{room_name: name, hash: hash, focus_hash: focus_hash}) do
-    case {QueryRoom.get(name), QueryPost.get(hash), QueryPost.get(focus_hash)} do
+    # TODO: get this ugly looking logic into it's own module
+    case {query(:room).get(name), query(:room).get(hash), query(:post).get(focus_hash)} do
       {room, op, post} when is_nil(room) or is_nil(op) or is_nil(post) ->
         post_404(conn)
 
@@ -60,7 +62,7 @@ defmodule GabblerWeb.PostController do
   end
 
   defp post_render(conn, %{room_name: name, hash: hash, mode: mode}) do
-    case {QueryRoom.get(name), QueryPost.get(hash)} do
+    case {query(:room).get(name), query(:post).get(hash)} do
       {room, post} when is_nil(room) or is_nil(post) ->
         post_404(conn)
 

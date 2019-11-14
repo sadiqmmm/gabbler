@@ -1,16 +1,17 @@
 # Gabbler
 
-Gabbler is a customizable core to create a Reddit-Like website. It is based on Phoenix and LiveView and provides the UI
-to create and maintain Rooms (/r/..), sign on users and post content in a variety of ways. Most functionality and notifications to the user run in real time. Also provided is a service that tracks trends much like Twitter by keeping a sorted list of content organized by the Tags they were posted with.
+Gabbler is a customizable core to create a Reddit-Like website. It is based on Phoenix and LiveView and provides the UI+Biz Logic to create and maintain Rooms (/r/..), sign on users and post content in a variety of ways. Most functionality and notifications to the user are presented in real time. Also provided is a service that tracks trends much like Twitter by keeping a sorted list of content organized by the Tags they were posted with.
 
-Previously, Gabbler was a project called Smileys Pub used to learn the Elixir ecosystem. The new goal is to explore LiveView to practice and identify good practices and patterns for a site that can reach a high level of complexity or scale. As new ideas are explored, the codebase will adapt with a priority on setting good standards. It will also adapt quickly as LiveView evolves toward it's official release. There is in fact zero javascript beyond the hook to run LiveView and it will stay that way.
+Previously, Gabbler was a project called Smileys Pub, used to learn the Elixir ecosystem. This is a near complete refactor with a new goal to explore LiveView and practice/identify good practices and patterns for a site that can reach a high level of complexity or scale. As new ideas are explored, the codebase will adapt with a priority on setting good standards. It will also adapt quickly as LiveView evolves toward it's official release. There is in fact zero javascript beyond the hook to run LiveView and it will stay that way.
 
-Feedback quite appreciated! And please feel free to raise issues or discuss contributing if interested.
+Feedback & suggestions quite appreciated! And please feel free to raise issues or discuss contributing if interested.
 
 Demo Site: [https://www.smileys.pub](https://www.smileys.pub)
 
 
 # For Developers
+
+Gabbler is going in the direction of a generic Reddit-like phoenix site where the querying backend can be swapped out and as many aspects of the site configurable as possible. That being said it is for a technical consumer and isn't meant yet to have anything like an admin interface to configure your options.
 
 ## Up and Running
 
@@ -30,7 +31,7 @@ The default dev setting is to have the Repo project alongside Gabbler Web. Every
 You should be able to navigate to http://localhost:4000 now
 
 
-## Development: Update Translations/Gettext
+## Update Translations/Gettext
 
 ```
 > mix gettext.extract

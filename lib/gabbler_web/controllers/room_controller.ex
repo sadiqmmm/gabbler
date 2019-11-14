@@ -2,16 +2,17 @@ defmodule GabblerWeb.RoomController do
   use GabblerWeb, :controller
 
   alias Gabbler.Live, as: GabblerLive
-  alias GabblerData.Query.Room, as: QueryRoom
+  import Gabbler, only: [query: 1]
 
   plug Gabbler.Plug.UserSession
+
 
   def new(conn, params) do
     GabblerLive.render(conn, GabblerWeb.Live.Room.New, params)
   end
 
   def room(conn, %{"room" => name, "mode" => "live"}) do
-    case QueryRoom.get(name) do
+    case query(:room).get(name) do
       nil ->
         room_404(conn)
 
@@ -21,7 +22,7 @@ defmodule GabblerWeb.RoomController do
   end
 
   def room(conn, %{"room" => name, "mode" => "new"}) do
-    case QueryRoom.get(name) do
+    case query(:room).get(name) do
       nil ->
         room_404(conn)
 
@@ -31,7 +32,7 @@ defmodule GabblerWeb.RoomController do
   end
 
   def room(conn, %{"room" => name}) do
-    case QueryRoom.get(name) do
+    case query(:room).get(name) do
       nil -> room_404(conn)
       room -> GabblerLive.render(conn, GabblerWeb.Live.Room.Index, %{room: room})
     end
