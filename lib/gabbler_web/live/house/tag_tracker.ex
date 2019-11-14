@@ -1,4 +1,4 @@
-defmodule GabblerWeb.Live.TagTracker.Index do
+defmodule GabblerWeb.Live.House.TagTracker do
   @moduledoc """
   The tag tracking special room
   """

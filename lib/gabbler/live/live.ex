@@ -9,7 +9,8 @@ defmodule Gabbler.Live do
   """
   def render(%{assigns: %{user: user, temp_token: token}} = conn, module, session) do
     session =
-      Map.put(session, :temp_token, token)
+      session
+      |> Map.put(:temp_token, token)
       |> Map.put(:user, user)
 
     live_render(conn, module, session: session)

@@ -1,6 +1,7 @@
 # The directory Mix will write compiled artifacts to.
 /_build/
 
+/config/dev.exs
 /config/prod.exs
 /config/prod.secret.exs
 
@@ -35,3 +36,5 @@ npm-debug.log
 # we ignore priv/static. You may want to comment
 # this depending on your deployment strategy.
 /priv/static/
+
+/rel

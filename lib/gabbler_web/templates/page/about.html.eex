@@ -1,1 +1,1 @@
-<p class="static"><%= gettext("about") %></p>
+<p class="static"><%= raw(gettext("about")) %></p>

@@ -100,7 +100,7 @@ msgstr ""
 #, elixir-format
 #: lib/gabbler_web/templates/page/about.html.eex:1
 msgid "about"
-msgstr "Welcome to Smiley's Pub! There aren't any actual smileys here, probably, yet. This is a demo site so the rules are simple; keep the content legal and porn free or it's a banning. Have fun and give your feedback at /r/gabbler_feedback. Signing up is simple and requires only that you select a user name. As a demo site there is no guarantee yet that data will be permenent. But resets will try to be avoided certainly."
+msgstr "<p>Welcome to Smiley's Pub! There isn't any actual smiling here. This is a demo and testing site so there is no guarantee that content won't be reset as moderation tools and rules develop. At the moment all content is under site owners discretion.</p><p>Have fun and give your feedback at /r/gabbler_feedback. Signing up is simple and requires only that you select a user name. This is an open source project and can be found <a href=\"https://github.com/smileys-tavern/gabbler\">here</a>.</p>"
 
 #, elixir-format
 #: lib/gabbler_web/live/tag_tracker/index.ex:62

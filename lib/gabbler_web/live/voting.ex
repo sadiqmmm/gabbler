@@ -93,7 +93,33 @@ defmodule GabblerWeb.Live.Voting do
         {:noreply, assign(socket, comments: comments)}
       end
 
-      def handle_event("vote", _, socket), do: {:noreply, socket}
+      def handle_event(
+            "vote",
+            %{"hash" => vote_hash, "dir" => dir},
+            %{assigns: %{posts: posts, user: user, rooms: rooms}} = socket
+          ) do
+        posts =
+          Enum.map(posts, fn %{id: id, hash: hash} = post ->
+            if hash == vote_hash do
+              case vote(user, post, dir) do
+                {:ok, post} ->
+                  broadcast_vote(post, hash, rooms[id].name)
+
+                {:error, error_str} ->
+                  GabblerWeb.Endpoint.broadcast("user:#{user.id}", "warning", %{msg: error_str})
+                  post
+              end
+            else
+              post
+            end
+          end)
+
+        {:noreply, assign(socket, posts: posts)}
+      end
+
+      def handle_event("vote", _params, socket) do
+        {:noreply, socket}
+      end
 
       def handle_info(
             %{event: "new_vote", payload: %{post: %{hash: voted_hash} = post}},

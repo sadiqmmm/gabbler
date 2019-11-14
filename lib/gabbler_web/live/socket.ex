@@ -2,6 +2,8 @@ defmodule GabblerWeb.Live.Socket do
   @moduledoc """
   All functions here should accept a socket and return a socket. Meant for common functionality related
   to forms and liveviews. This module is best used via import
+
+  TODO: update module purpose, make it about changesets instead of the socket conn
   """
   import Phoenix.LiveView
 
