@@ -46,4 +46,10 @@ http://paletton.com/#uid=33B0u0kpQteg1DDl5vstnoow5jn
 
 ## Deployment
 
-Coming soon
+1. Ensure .deliver/config and rel/config.exs are up to date for your env and define a build server (see distillery and eDeliver docs)
+
+2. Make sure Git repo is up to date
+
+3. mix edeliver build release --mix-env=prod
+
+4. mix edeliver deploy release prod --start-deploy
