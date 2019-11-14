@@ -69,7 +69,7 @@ defmodule Gabbler.MixProject do
 
   defp env_deps(env) when env in [:prod] do
     [
-      {:gabbler_data, git: "smileys-tavern/gabbler", env: Mix.env()}
+      {:gabbler_data, git: "https://github.com/smileys-tavern/gabbler_data", env: Mix.env()}
     ]
   end
 
