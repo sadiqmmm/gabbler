@@ -36,5 +36,5 @@ npm-debug.log
 # this depending on your deployment strategy.
 /priv/static/
 
-/rel
+/rel/config.exs
 .deliver
