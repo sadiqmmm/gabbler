@@ -3,7 +3,7 @@ defmodule GabblerWeb.Live.User.Login do
   Authentication live view to manage the ui based on a users status and actions
   """
   use Phoenix.LiveView
-  import GabblerWeb.Live.Socket, only: [no_reply: 1, update_changeset: 5]
+  import Gabbler.Live.SocketUtil, only: [no_reply: 1, update_changeset: 5]
 
   alias GabblerData.User
 

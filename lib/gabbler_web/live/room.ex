@@ -9,7 +9,7 @@ defmodule GabblerWeb.Live.Room do
 
       import Gabbler, only: [query: 1]
       import GabblerWeb.Gettext
-      import GabblerWeb.Live.Socket, only: [no_reply: 1, update_changeset: 5]
+      import Gabbler.Live.SocketUtil, only: [no_reply: 1, update_changeset: 5]
 
       alias GabblerWeb.Presence
 

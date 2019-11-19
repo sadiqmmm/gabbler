@@ -4,7 +4,7 @@ defmodule GabblerWeb.Live.Post.New do
   """
   use Phoenix.LiveView
   import Gabbler, only: [query: 1]
-  import GabblerWeb.Live.Socket, only: [no_reply: 1]
+  import Gabbler.Live.SocketUtil, only: [no_reply: 1]
 
   alias Gabbler.PostCreation
   alias GabblerData.{Post, PostMeta}
