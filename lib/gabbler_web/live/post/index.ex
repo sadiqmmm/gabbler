@@ -3,8 +3,8 @@ defmodule GabblerWeb.Live.Post.Index do
   The Post Page LiveView
   """
   use GabblerWeb.Live.Auth, auth_required: ["reply", "reply_submit", "reply_comment", "vote", "subscribe"]
-  use GabblerWeb.Live.Room
   use GabblerWeb.Live.Voting
+  use GabblerWeb.Live.Room
   use GabblerWeb.Live.Konami, timeout: 5000
   use Phoenix.LiveView
 

@@ -10,156 +10,51 @@ defmodule GabblerWeb.Live.Voting do
       import Phoenix.LiveView
       import Gabbler, only: [query: 1]
       import GabblerWeb.Gettext
+      import Gabbler.Live.SocketUtil, only: [no_reply: 1]
 
-      # Post is set, voting on Post page on OP
-      def handle_event(
-            "vote",
-            %{"hash" => vote_hash, "dir" => dir},
-            %{
-              assigns: %{
-                post: %{hash: hash} = post,
-                op: %{hash: op_hash},
-                room: %{name: room_name},
-                user: user
-              }
-            } = socket
-          )
-          when vote_hash == hash do
-        case vote(user, post, dir) do
-          {:ok, post} ->
-            {:noreply, assign(socket, post: broadcast_vote(post, op_hash, room_name))}
-
-          {:error, error_str} ->
-            GabblerWeb.Endpoint.broadcast("user:#{user.id}", "warning", %{msg: error_str})
-            {:noreply, socket}
-        end
+      @doc """
+      The current user votes
+      """
+      def handle_event("vote", %{"hash" => hash, "dir" => dir}, %{assigns: assigns} = socket) do
+        get_vote_post(assigns, hash)
+        |> vote(assigns, dir)
+        |> assign_vote(socket)
+        |> broadcast_vote()
+        |> no_reply()
       end
 
-      # Posts is set, voting from Room summary page
-      def handle_event(
-            "vote",
-            %{"hash" => vote_hash, "dir" => dir},
-            %{assigns: %{posts: posts, room: %{name: room_name}, user: user}} = socket
-          ) do
-        posts =
-          Enum.map(posts, fn %{hash: hash} = post ->
-            if hash == vote_hash do
-              # OP is definitely post if from a room
-              case vote(user, post, dir) do
-                {:ok, post} ->
-                  broadcast_vote(post, post.hash, room_name)
-
-                {:error, error_str} ->
-                  GabblerWeb.Endpoint.broadcast("user:#{user.id}", "warning", %{msg: error_str})
-                  post
-              end
-            else
-              post
-            end
-          end)
-
-        {:noreply, assign(socket, posts: posts)}
-      end
-
-      # Comments is set and prev clause no match so we are voting on a post page but not the OP
-      def handle_event(
-            "vote",
-            %{"hash" => vote_hash, "dir" => dir},
-            %{
-              assigns: %{
-                comments: comments,
-                op: %{hash: op_hash},
-                room: %{name: room_name},
-                user: user
-              }
-            } = socket
-          ) do
-        comments =
-          Enum.map(comments, fn %{hash: hash} = comment ->
-            if hash == vote_hash do
-              case vote(user, comment, dir) do
-                {:ok, comment} ->
-                  broadcast_vote(comment, op_hash, room_name)
-
-                {:error, error_str} ->
-                  GabblerWeb.Endpoint.broadcast("user:#{user.id}", "warning", %{msg: error_str})
-                  comment
-              end
-            else
-              comment
-            end
-          end)
-
-        {:noreply, assign(socket, comments: comments)}
-      end
-
-      def handle_event(
-            "vote",
-            %{"hash" => vote_hash, "dir" => dir},
-            %{assigns: %{posts: posts, user: user, rooms: rooms}} = socket
-          ) do
-        posts =
-          Enum.map(posts, fn %{id: id, hash: hash} = post ->
-            if hash == vote_hash do
-              case vote(user, post, dir) do
-                {:ok, post} ->
-                  broadcast_vote(post, hash, rooms[id].name)
-
-                {:error, error_str} ->
-                  GabblerWeb.Endpoint.broadcast("user:#{user.id}", "warning", %{msg: error_str})
-                  post
-              end
-            else
-              post
-            end
-          end)
-
-        {:noreply, assign(socket, posts: posts)}
-      end
-
-      def handle_event("vote", _params, socket) do
-        {:noreply, socket}
-      end
-
-      def handle_info(
-            %{event: "new_vote", payload: %{post: %{hash: voted_hash} = post}},
-            %{assigns: %{posts: posts}} = socket
-          ) do
-        case Enum.find_index(posts, fn %{hash: hash} -> voted_hash == hash end) do
-          nil -> {:noreply, socket}
-          i -> {:noreply, assign(socket, posts: List.replace_at(posts, i, post))}
-        end
-      end
-
-      def handle_info(
-            %{event: "new_vote", payload: %{post: %{hash: voted_hash} = post}},
-            %{assigns: %{post: %{hash: hash}}} = socket
-          )
-          when hash == voted_hash do
-        {:noreply, assign(socket, post: post)}
-      end
-
-      def handle_info(
-            %{event: "new_vote", payload: %{post: %{hash: voted_hash} = post}},
-            %{assigns: %{comments: comments}} = socket
-          ) do
-        case Enum.find_index(comments, fn %{hash: hash} -> voted_hash == hash end) do
-          nil -> {:noreply, socket}
-          i -> {:noreply, assign(socket, comments: List.replace_at(comments, i, post))}
-        end
+      @doc """
+      A new vote event happens on the current room or post subscription
+      (someone else voted on the currently viewed topic)
+      """
+      def handle_info(%{event: "new_vote", payload: %{post: %{hash: hash} = post}}, %{assigns: assigns} = socket) do
+        get_vote_post(assigns, hash)
+        |> assign_vote(socket)
+        |> get_socket()
+        |> no_reply()
       end
 
       # PRIVATE FUNCTIONS
       ###################
-      defp vote(user, post, "up") do
-        vote(user, post, 1)
+      defp get_vote_post(%{op: %{hash: op_hash} = op}, hash) when op_hash == hash, do: op
+      
+      defp get_vote_post(%{comments: comments, op: _}, hash) do
+        Enum.filter(comments, fn %{hash: comment_hash} -> comment_hash == hash end)
+        |> List.first()
       end
-
-      defp vote(user, post, "down") do
-        vote(user, post, -1)
+      
+      defp get_vote_post(%{posts: posts}, hash) do
+        Enum.filter(posts, fn %{hash: post_hash} -> post_hash == hash end)
+        |> List.first()
       end
+      
+      defp get_vote_post(_, _), do: nil
 
-      defp vote(user, %{hash: hash} = post, amt) do
+      defp vote(nil, _, _), do: nil
+      defp vote(post, %{user: user} = assigns, "up"), do: vote(post, user, 1)
+      defp vote(post, %{user: user} = assigns, "down"), do: vote(post, user, -1)
+
+      defp vote(%{hash: hash} = post, user, amt) do
         if Gabbler.User.can_vote?(user, hash) do
           case query(:post).increment_score(post, amt, nil) do
             {1, nil} ->
@@ -179,11 +74,69 @@ defmodule GabblerWeb.Live.Voting do
         end
       end
 
-      def broadcast_vote(post, op_hash, room_name) do
-        GabblerWeb.Endpoint.broadcast("post_live:#{op_hash}", "new_vote", %{post: post})
+      defp assign_vote({:ok, post}, %{assigns: %{comments: comments, room: room}} = socket) do
+        comments = replace_post(comments, post)
+
+        {:ok, post, assign(socket, comments: comments)}
+      end
+
+      defp assign_vote({:ok, post}, %{assigns: %{posts: posts, room: room}} = socket) do
+        posts = replace_post(posts, post)
+
+        {:ok, post, assign(socket, posts: posts)}
+      end
+
+      defp assign_vote({:ok, post}, %{assigns: %{posts: posts, rooms: rooms}} = socket) do
+        posts = replace_post(posts, post)
+
+        {:ok, post, assign(socket, posts: posts)}
+      end
+
+      defp assign_vote({:ok, post}, %{assigns: %{room: room}} = socket) do
+        {:ok, post, assign(socket, post: post)}
+      end
+
+      defp assign_vote({:error, error_str}, socket) do
+        {:error, error_str, socket}
+      end
+
+      defp assign_vote(nil, socket), do: {:noop, nil, socket}
+
+      # TODO: moving some of this to a broadcasting protocol?
+      defp broadcast_vote({:ok, post, %{assigns: %{room: %{name: room_name}}} = socket}) do
+        GabblerWeb.Endpoint.broadcast("post_live:#{post.hash}", "new_vote", %{post: post})
         GabblerWeb.Endpoint.broadcast("room_live:#{room_name}", "new_vote", %{post: post})
 
-        post
+        socket
+      end
+
+      defp broadcast_vote({:ok, %{id: post_id, hash: hash} = post, %{assigns: %{rooms: rooms}} = socket}) do
+        GabblerWeb.Endpoint.broadcast("post_live:#{hash}", "new_vote", %{post: post})
+
+        if room = Map.get(rooms, post_id) do
+          GabblerWeb.Endpoint.broadcast("room_live:#{room.name}", "new_vote", %{post: post})
+        end
+
+        socket
+      end
+
+      defp broadcast_vote({:error, error_str, %{assigns: %{user: %{id: user_id}}} = socket}) do
+        GabblerWeb.Endpoint.broadcast("user:#{user_id}", "warning", %{msg: error_str})
+
+        socket
+      end
+
+      defp broadcast_vote({:noop, nil, socket}), do: socket
+
+      defp get_socket({_, _, socket}), do: socket
+
+      defp replace_post(posts, post) do
+        Enum.map(posts, fn %{hash: hash} = current_post ->
+          cond do
+            hash == post.hash -> post
+            true -> current_post
+          end
+        end)
       end
     end
   end
