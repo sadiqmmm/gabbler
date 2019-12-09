@@ -11,6 +11,9 @@ defmodule GabblerWeb.Live.Voting do
       import Gabbler, only: [query: 1]
       import GabblerWeb.Gettext
       import Gabbler.Live.SocketUtil, only: [no_reply: 1]
+      
+      alias GabblerData.Post
+
 
       @doc """
       The current user votes
@@ -99,6 +102,8 @@ defmodule GabblerWeb.Live.Voting do
       defp assign_vote({:error, error_str}, socket) do
         {:error, error_str, socket}
       end
+
+      defp assign_vote(%Post{} = post, socket), do: assign_vote({:ok, post}, socket)
 
       defp assign_vote(nil, socket), do: {:noop, nil, socket}
 

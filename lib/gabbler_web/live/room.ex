@@ -35,6 +35,7 @@ defmodule GabblerWeb.Live.Room do
             owner: query(:user).get(room.user_id_creator),
             user_count: user_count,
             moderators: mods,
+            sidebar_on: false,
             mod_invite: ""
           )
         )
@@ -51,6 +52,10 @@ defmodule GabblerWeb.Live.Room do
 
         {:noreply, assign(socket, user_count: user_count)}
       end
+
+      @impl true
+      def handle_event("toggle_sidebar", _, %{assigns: %{sidebar_on: false}} = socket), do: {:noreply, assign(socket, sidebar_on: true)}
+      def handle_event("toggle_sidebar", _, %{assigns: %{sidebar_on: true}} = socket), do: {:noreply, assign(socket, sidebar_on: false)}
 
       @impl true
       def handle_event("subscribe", _, %{assigns: %{user: user, room: room}} = socket) do

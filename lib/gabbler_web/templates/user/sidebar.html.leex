@@ -1,4 +1,5 @@
-<div class="sidebar" phx-keydown="keydown" phx-target="window">
+<div class="mobile mobile_sidebar_options"><a href="#" phx-click="toggle_sidebar">Menu</a></div>
+<div class="sidebar <%= if @sidebar_on do %>mobile<% end %>" phx-keydown="keydown" phx-target="window">
   <div class="site-actions">
     <div class="room-fact">
       <%= @user_count %> online here

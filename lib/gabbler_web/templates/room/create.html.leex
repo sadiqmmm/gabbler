@@ -8,7 +8,7 @@
 
     <%= if @updated do %>
       <div class="info">
-        <p><%= gettext "Successful update" %></p>
+        <p><%= gettext "Successful update" %> <a href="/r/<%= @room.name %>"><%= @room.name %></a></p>
       </div>
     <% end %>
 

@@ -14,7 +14,12 @@
 
     <%= if @updated do %>
       <div class="info">
-        <p><%= gettext "Successful update" %> <%= @updated %></p>
+        <p>
+          <%= gettext "Successful update" %> <%= @updated %> 
+        </p>
+        <a href="/r/<%= @room.name %>/comments/<%= @post.hash %>/">
+          /r/<%= @room.name %>/comments/<%= @post.hash %>
+        </a>
       </div>
     <% end %>
 
@@ -30,6 +35,7 @@
       changeset_key: :body,
       title: "body",
       type: "post",
+      maxlength: "11099",
       desc: gettext("alphanumeric and .,?!:;-\" allowed as well as markdown"), 
       value: @post.body}) %>
 
