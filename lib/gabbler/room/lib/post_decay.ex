@@ -7,7 +7,7 @@ defmodule Gabbler.Room.PostDecay do
   import Gabbler, only: [query: 1]
   alias GabblerData.Room
 
-  @default_decay_ratio 0.8
+  @default_decay_ratio 0.85
 
 
   @doc """
@@ -21,13 +21,13 @@ defmodule Gabbler.Room.PostDecay do
   Get the amount of time until decay (milliseconds)
   """
   def set_decay_timer(:rapid) do
-    # 1 hour
+    # Each 1 hour
     Process.send_after(self(), :decay, 3600000)
     :ok
   end
 
   def set_decay_timer(:slow) do
-    # 4 hours
+    # Each 4 hours
     Process.send_after(self(), :decay, 144000000)
     :ok
   end
@@ -39,7 +39,6 @@ defmodule Gabbler.Room.PostDecay do
   score will be reduced quickly. Returns :ok or :error tuple with amount of posts affected
   """
   def decay_room_posts(%Room{} = room) do
-    query(:post).multiply_scores(room, @default_decay_ratio, 24, 25)
-    |> IO.inspect()
+    query(:post).multiply_scores(room, @default_decay_ratio, 24, 28)
   end
 end
