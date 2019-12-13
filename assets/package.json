@@ -2,7 +2,9 @@
   "repository": {},
   "license": "MIT",
   "scripts": {
-    "deploy": "webpack --mode production",
+    "test": "mocha ./test/**/*.js --exit -r @babel/register -r jsdom-global/register",
+    "docs": "documentation build js/phoenix.js -f html -o ../doc/js",
+    "build": "webpack --mode production",
     "watch": "webpack --mode development --watch"
   },
   "dependencies": {
@@ -20,10 +22,12 @@
     "growl": "~> 1.10.0",
     "jsdom": "9.8.3",
     "jsdom-global": "2.1.0",
+    "mini-css-extract-plugin": "^0.8.0",
     "mocha": "^5.2.0",
     "mock-socket": "^6.0.1",
     "sinon": "^1.17.6",
     "webpack": "^4.23.1",
     "webpack-cli": "^3.3.2"
-  }
+  },
+  "sideEffects": false
 }
