@@ -79,15 +79,11 @@ defmodule GabblerWeb.Live.Post.Index do
     |> no_reply()
   end
 
-  def handle_event("reply_hide", _, socket),
-    do:
-      assign(socket, reply_display: "hidden")
-      |> no_reply()
+  def handle_event("reply_hide", _, socket), do: assign(socket, reply_display: "hidden")
+  |> no_reply()
 
-  def handle_event("reply_comment_hide", _, socket),
-    do:
-      assign(socket, reply_comment_display: "hidden")
-      |> no_reply()
+  def handle_event("reply_comment_hide", _, socket), do: assign(socket, reply_comment_display: "hidden")
+  |> no_reply()
 
   def handle_event(
         "reply_change",

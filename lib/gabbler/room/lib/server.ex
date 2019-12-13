@@ -32,10 +32,10 @@ defmodule Gabbler.Room.Server do
   end
 
   @impl true
-  def handle_info(:decay, %RoomState{decay_mode: mode} = state) do
-    
-    
+  def handle_info(:decay, %RoomState{room: room, decay_mode: mode} = state) do
     _ = PostDecay.set_decay_timer(mode)
+
+    _ = PostDecay.decay_room_posts(room)
 
     {:noreply, state}
   end

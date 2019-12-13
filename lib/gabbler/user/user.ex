@@ -163,18 +163,11 @@ defmodule Gabbler.User do
   defp get_user_server_pid(user) do
     case :syn.find_by_key(server_name(user)) do
       :undefined ->
-        subs =
-          Enum.reduce(
-            QuerySubscription.list(user, join: :room, limit: @max_subscriptions),
-            [],
-            fn {_, %{name: name}}, acc -> [name | acc] end
-          )
+        subs = QuerySubscription.list(user, join: :room, limit: @max_subscriptions)
+        |> Enum.reduce([], fn {_, %{name: name}}, acc -> [name | acc] end)
 
-        moderating =
-          QueryModerating.list(user, join: :room, limit: @max_moderating)
-          |> Enum.reduce([], fn {_, %{name: name}}, acc ->
-            [name | acc]
-          end)
+        moderating = QueryModerating.list(user, join: :room, limit: @max_moderating)
+        |> Enum.reduce([], fn {_, %{name: name}}, acc -> [name | acc] end)
 
         case UserApp.add_child(user, subs, moderating) do
           {:error, {:already_started, pid}} -> pid

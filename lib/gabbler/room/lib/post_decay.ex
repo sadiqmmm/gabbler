@@ -1,11 +1,14 @@
 defmodule Gabbler.Room.PostDecay do
   @moduledoc """
   This module provides some abstraction to decay a posts relevance by time
-  """
-  alias GabblerData.Post
-  alias Gabbler.Room.RoomState
 
-  @decay_by 10
+  TODO: move decay settings to configuration
+  """
+  import Gabbler, only: [query: 1]
+  alias GabblerData.Room
+
+  @default_decay_ratio 0.8
+
 
   @doc """
   Get the atom version of an expirey mode
@@ -32,9 +35,11 @@ defmodule Gabbler.Room.PostDecay do
   def set_decay_timer(_), do: nil
 
   @doc """
-  Decay a post
+  Decay posts on behalf of a room. If posts fall within the 'decay period' their private
+  score will be reduced quickly. Returns :ok or :error tuple with amount of posts affected
   """
-  def decay_post(%Post{score_private: _}, %RoomState{}) do
-    :ok
+  def decay_room_posts(%Room{} = room) do
+    query(:post).multiply_scores(room, @default_decay_ratio, 24, 25)
+    |> IO.inspect()
   end
 end

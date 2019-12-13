@@ -1,14 +1,11 @@
 defmodule Gabbler.Application do
-  # See https://hexdocs.pm/elixir/Application.html
-  # for more information on OTP Applications
   @moduledoc false
-
   use Application
 
   def start(_type, _args) do
     import Supervisor.Spec, warn: false
 
-    # Initialize syn, the global process registry
+    # Initialize syn, global process registry
     :syn.start()
     :syn.init()
 
@@ -17,6 +14,7 @@ defmodule Gabbler.Application do
       GabblerWeb.Endpoint,
       GabblerWeb.Presence,
       {Gabbler.User.Application, strategy: :one_for_one, name: :user_server},
+      {Gabbler.Room.Application, strategy: :one_for_one, name: :room_server},
       Gabbler.TagTracker.Application,
       worker(Gabbler.Scheduler, [])
     ]

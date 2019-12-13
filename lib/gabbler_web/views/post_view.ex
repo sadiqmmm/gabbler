@@ -7,10 +7,10 @@ defmodule GabblerWeb.PostView do
     Timex.format!(datetime, "{relative}", :relative)
   end
 
-  def display_post_body(%{body: body}),
-    do:
-      Earmark.as_html!(body)
-      |> String.replace("\r", "<br/>")
+  def display_post_body(%{body: body}) do
+    Earmark.as_html!(body)
+    |> String.replace("\r", "<br/>")
+  end
 
   def get_post_body(changeset) do
     case Ecto.Changeset.fetch_field(changeset, :body) do
