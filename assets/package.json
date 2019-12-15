@@ -3,7 +3,7 @@
   "license": "MIT",
   "scripts": {
     "watch": "webpack --mode development --watch",
-    "deploy": "webpack --mode development"
+    "deploy": "webpack --mode production"
   },
   "dependencies": {
     "phoenix": "file:../deps/phoenix",
@@ -21,6 +21,5 @@
     "terser-webpack-plugin": "^1.1.0",
     "webpack": "4.4.0",
     "webpack-cli": "^3.3.2"
-  },
-  "sideEffects": false
+  }
 }
