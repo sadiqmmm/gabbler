@@ -1,5 +1,5 @@
 /* This file is for your main application css. */
-@import "../../deps/phoenix_live_view/assets/css/live_view.css";
+@import "./../../deps/phoenix_live_view/assets/css/live_view.css";
 
 /*
  * PALETTE: http://paletton.com/#uid=33B0u0kpQteg1DDl5vstnoow5jn
@@ -1220,7 +1220,7 @@ form.link, form.button {
   }
   .form-sidebar-wide input[type=text],
   #post_body {
-    width: 93%;
+    width: 93%; 
   }
   .form-sidebar button {
     width: 97%;
