@@ -2,7 +2,7 @@
 
 Gabbler is a customizable phoenix project for creating Reddit-Like websites. 
 
-Demo Site: [https://smileys.pub](https://smileys.pub)
+Demo Site - [https://smileys.pub](https://smileys.pub)
 ---
 It is based on Phoenix and LiveView and provides the UI+Biz Logic to create and maintain Rooms (/r/..), sign on users and post content in a variety of ways. Most functionality and notifications to the user are presented in real time. Also provided is a service that tracks trends much like Twitter by keeping a sorted list of content organized by the Tags they were posted with.
 
