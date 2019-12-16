@@ -1,12 +1,14 @@
 # Gabbler
 
-Gabbler is a customizable phoenix project for creating Reddit-Like websites. It is based on Phoenix and LiveView and provides the UI+Biz Logic to create and maintain Rooms (/r/..), sign on users and post content in a variety of ways. Most functionality and notifications to the user are presented in real time. Also provided is a service that tracks trends much like Twitter by keeping a sorted list of content organized by the Tags they were posted with.
+Gabbler is a customizable phoenix project for creating Reddit-Like websites. 
+
+Demo Site: [https://smileys.pub](https://smileys.pub)
+---
+It is based on Phoenix and LiveView and provides the UI+Biz Logic to create and maintain Rooms (/r/..), sign on users and post content in a variety of ways. Most functionality and notifications to the user are presented in real time. Also provided is a service that tracks trends much like Twitter by keeping a sorted list of content organized by the Tags they were posted with.
 
 Previously, Gabbler was a project called Smileys Pub, used to learn the Elixir ecosystem. This is a near complete refactor with a new goal to explore LiveView and practice/identify good practices and patterns for a site that can reach a high level of complexity or scale. As new ideas are explored, the codebase will adapt with a priority on setting good standards. It will also adapt quickly as LiveView evolves toward it's official release. There is in fact zero javascript beyond the hook to run LiveView and it will stay that way.
 
 Feedback & suggestions quite appreciated!
-
-Demo Site: [https://www.smileys.pub](https://www.smileys.pub)
 
 
 # For Developers
