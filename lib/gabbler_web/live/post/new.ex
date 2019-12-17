@@ -203,7 +203,7 @@ defmodule GabblerWeb.Live.Post.New do
   end
 
   defp update_post_assign(%{assigns: %{post: post, changeset: changeset}} = socket, :body, value) do
-    sanitized_value = HtmlSanitizeEx.strip_tags(value)
+    sanitized_value = HtmlSanitizeEx.markdown_html(value)
 
     post = Map.put(post, :body, sanitized_value)
 

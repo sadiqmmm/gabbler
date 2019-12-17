@@ -8,7 +8,7 @@ It is based on Phoenix and LiveView and provides the UI+Biz Logic to create and 
 
 Previously, Gabbler was a project called Smileys Pub, used to learn the Elixir ecosystem. This is a near complete refactor with new goals such as exploring OTP and LiveView to find good practices for (somewhat) complex sites. As new ideas are explored, the codebase will adapt with a priority on setting good standards. It will also adapt quickly as LiveView evolves toward it's official release. There is in fact zero javascript beyond the hook to run LiveView and it will stay that way.
 
-Feedback & suggestions quite appreciated. If you like the idea of practicing Elixir on a community based site leave a note or dive in.
+Feedback & suggestions quite appreciated. If you like the idea of practicing Elixir on a community based site leave a note or dive right in.
 
 # For Developers
 

@@ -390,8 +390,8 @@ nav .menu .menu-item {
  * FORM
  */
 .form-sidebar {
-  position: absolute;
-  top: 20px;
+  position: fixed;
+  top: 110px;
   right: 0;
   width: 400px;
   padding: 10px;
