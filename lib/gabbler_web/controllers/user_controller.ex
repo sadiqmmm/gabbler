@@ -15,18 +15,17 @@ defmodule GabblerWeb.UserController do
 
   def profile(conn, %{"username" => name}) do
     case query(:user).get(URI.decode(name)) do
-      nil ->
-        user_404(conn)
-
       %{id: user_id} = user ->
         posts = query(:post).list(by_user: user_id, order_by: :inserted_at, only: :op)
 
         render(conn, "profile.html",
-          user: user,
+          subject_user: user,
           posts: posts,
           rooms: query(:post).map_rooms(posts),
           post_metas: query(:post).map_meta(posts)
         )
+      _ ->
+        user_404(conn)
     end
   end
 

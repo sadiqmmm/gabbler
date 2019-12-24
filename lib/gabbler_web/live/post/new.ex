@@ -178,6 +178,7 @@ defmodule GabblerWeb.Live.Post.New do
   # PRIV
   #############################
   defp init(%{room: %{id: room_id} = room, user: %{id: user_id} = user}, socket) do
+    # TODO Address the large list of defaults for the preview (ugly)
     assign(socket,
       changeset:
         Post.changeset(%Post{user_id_post: user_id, parent_id: room_id, parent_type: "room"}),
